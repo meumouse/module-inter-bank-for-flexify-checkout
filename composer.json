@@ -1,0 +1,23 @@
+{
+    "name": "meumouse/module-inter-bank",
+    "description": "Receba pagamentos via Pix e Boleto com aprovação automática sem taxas usando o Flexify Checkout para WooCommerce.",
+    "type": "library",
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "MeuMouse.com",
+            "email": "contato@meumouse.com",
+            "homepage": "https://meumouse.com"
+        }
+    ],
+    "require": {
+        "php": ">= 7.4",
+        "chillerlan/php-qrcode": "4.3.4",
+        "chillerlan/php-settings-container": "2.1.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Module_Inter_Bank\\": "inc/"
+        }
+    }
+}
