@@ -7,7 +7,7 @@ use MeuMouse\Flexify_Checkout\Inter_Bank;
 use MeuMouse\Flexify_Checkout\Inter_Bank\API\Bank_Slip_API;
 use MeuMouse\Flexify_Checkout\Inter_Bank\API\Webhooks_API;
 use MeuMouse\Flexify_Checkout\Inter_Bank\Bank_Slip\Print_Bank_Slip;
-use MeuMouse\Flexify_Checkout\Init\Init;
+use MeuMouse\Flexify_Checkout\Init;
 use WC_Payment_Gateway;
 
 // Exit if accessed directly.
@@ -17,7 +17,7 @@ defined('ABSPATH') || exit;
  * Class for extends payment gateways from WooCommerce, adding Base_Gateway for extends with Pix and Slip
  * 
  * @since 1.0.0
- * @version 1.1.0
+ * @version 1.2.0
  * @package MeuMouse.com
  */
 abstract class Base_Gateway extends WC_Payment_Gateway {

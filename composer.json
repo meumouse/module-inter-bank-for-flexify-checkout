@@ -17,7 +17,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Module_Inter_Bank\\": "inc/"
+             "MeuMouse\\Flexify_Checkout\\Inter_Bank\\": "inc/"
         }
     }
 }

@@ -5,7 +5,7 @@ namespace MeuMouse\Flexify_Checkout\Inter_Bank\Gateways;
 use Exception;
 use MeuMouse\Flexify_Checkout\Inter_Bank;
 use MeuMouse\Flexify_Checkout\Inter_Bank\API\Pix_API;
-use MeuMouse\Flexify_Checkout\Init\Init;
+use MeuMouse\Flexify_Checkout\Init;
 use chillerlan\QRCode\QRCode;
 
 // Exit if accessed directly.
@@ -15,7 +15,7 @@ defined('ABSPATH') || exit;
  * Class for extends main class Base_Gateway for add payment gateway Pix on WooCommerce
  * 
  * @since 1.0.0
- * @version 1.1.0
+ * @version 1.2.0
  * @package MeuMouse.com
  */
 class Pix extends Base_Gateway {
@@ -42,7 +42,7 @@ class Pix extends Base_Gateway {
     parent::__construct();
 
     // compatibility with migration from another plugin
-    $this->icon = apply_filters( 'inter_bank_pix_icon', FCW_MODULE_INTER_ASSETS . 'img/pix.svg' );
+    $this->icon = apply_filters( 'inter_bank_pix_icon', FD_MODULE_INTER_ASSETS . 'img/pix.svg' );
     $this->has_fields = false;
     $this->method_title = __( 'Pix Banco Inter', 'module-inter-bank-for-flexify-checkout' );
     $this->method_description = __( 'Receba pagamentos instantâneos via Pix no Banco Inter com aprovação automática.', 'module-inter-bank-for-flexify-checkout' );
@@ -176,7 +176,7 @@ class Pix extends Base_Gateway {
         'pix_image' => $order->get_meta('inter_pix_qrcode'),
       ),
 			'',
-			FCW_MODULE_INTER_TPL_PATH
+			FD_MODULE_INTER_TPL_PATH
 		);
   }
 
@@ -239,7 +239,7 @@ class Pix extends Base_Gateway {
         'pix_image' => $order->get_meta( 'inter_pix_qrcode' ),
       ),
 			'',
-			FCW_MODULE_INTER_TPL_PATH
+			FD_MODULE_INTER_TPL_PATH
 		);
   }
 
@@ -273,7 +273,7 @@ class Pix extends Base_Gateway {
       jQuery( function($) {
         var BancoInterPixCheckParams = <?php echo json_encode( [
           'interval' => 5,
-          'wc_ajax_url' => \WC_AJAX::get_endpoint( '%%endpoint%%' ),
+          'wc_ajax_url' => \WC_AJAX::get_endpoint('%%endpoint%%'),
           'orderId' => intval( $order->get_id() ),
           'orderKey' => esc_attr( $order->get_order_key() ),
         ] ); ?>;
@@ -352,11 +352,11 @@ class Pix extends Base_Gateway {
         'is_email' => false,
         'instructions' => '',
         'pix_details_page' => $order->get_checkout_payment_url( true ),
-        'payload' => $order->get_meta( 'inter_pix_payload' ),
-        'pix_image' => $order->get_meta( 'inter_pix_qrcode' ),
+        'payload' => $order->get_meta('inter_pix_payload'),
+        'pix_image' => $order->get_meta('inter_pix_qrcode'),
       ),
 			'',
-			FCW_MODULE_INTER_TPL_PATH
+			FD_MODULE_INTER_TPL_PATH
 		);
   }
 
@@ -376,7 +376,7 @@ class Pix extends Base_Gateway {
 
     $response = [
       'message' => 'Success!',
-      'version' => FCW_MODULE_INTER_VERSION,
+      'version' => FD_MODULE_INTER_VERSION,
     ];
 
     try {

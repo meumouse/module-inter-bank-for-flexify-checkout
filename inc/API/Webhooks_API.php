@@ -19,12 +19,12 @@ class Webhooks_API extends API_Base {
    * Parts for fill API endpoints
    * 
    * @since 1.0.0
-   * @version 1.1.0
+   * @version 1.2.0
    */
-  public $endpoints = [
+  public $endpoints = array(
     'interpix' => 'pix/v2/webhook/',
     'interboleto' => 'cobranca/v3/cobrancas/webhook',
-  ];
+  );
 
 
   /**

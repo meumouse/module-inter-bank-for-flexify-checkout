@@ -7,7 +7,11 @@ use Exception;
 defined('ABSPATH') || exit;
 
 /**
+ * Add integration Pix to API_Base abstract class
  * 
+ * @since 1.0.0
+ * @version 1.2.0
+ * @package MeuMouse.com
  */
 class Pix_API extends API_Base {
 
@@ -15,6 +19,7 @@ class Pix_API extends API_Base {
    * Create new Pix collection
    *
    * @since 1.0.0
+   * @version 1.2.0
    * @return void
    */
   public function create( $order ) {
@@ -40,11 +45,11 @@ class Pix_API extends API_Base {
       'solicitacaoPagador' => sprintf( __( 'Pagamento do pedido #%s.', 'module-inter-bank-for-flexify-checkout' ), $order->get_id() ),
       'infoAdicionais' => [
         [
-          'nome' => 'Pedido',
-          'valor' => $order->get_id(),
+          'nome' => __( 'Pedido: ', 'module-inter-bank-for-flexify-checkout' ),
+          'valor' => sprintf( __( '#%s' ), $order->get_id() ),
         ],
         [
-          'nome' => 'Site',
+          'nome' => __( 'Site: ', 'module-inter-bank-for-flexify-checkout' ),
           'valor' => str_replace( [ 'https://', 'http://' ], '', home_url() ),
         ],
       ],

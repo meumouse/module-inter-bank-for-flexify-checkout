@@ -79,30 +79,28 @@ defined('ABSPATH') || exit; ?>
 
 <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.10/dist/clipboard.min.js"></script>
 
-<script>
+<script class="flexify-checkout-clipboard-js skip-lazy" data-no-defer="1">
   jQuery( function($) {
+    var linecode_button = $('.wc-copy-linecode-button');
+    var pix_button = $('.wc-copy-pix-copia-cola-button');
     var linecode = new ClipboardJS('.wc-copy-linecode-button');
 
     linecode.on('success', function(e) {
-      $( '.wc-copy-linecode-button' ).html('Copiado!');
+      linecode_button.html('Copiado!');
 
       window.setTimeout( function() {
-        let button = $('.wc-copy-linecode-button');
-
-        button.html( button.data('text') );
-      }, 1500 );
+        linecode_button.html(linecode_button.data('text'));
+      }, 1500);
     });
 
     var pix = new ClipboardJS('.wc-copy-pix-copia-cola-button');
 
     pix.on('success', function(e) {
-      $( '.wc-copy-pix-copia-cola-button' ).html('Copiado!');
+      pix_button.html('Copiado!');
 
-      window.setTimeout( function() {
-        let button = $('.wc-copy-pix-copia-cola-button');
-
-        button.html( button.data('text') );
-      }, 1500 );
+      window.setTimeout(function() {
+        pix_button.html(pix_button.data('text'));
+      }, 1500);
     });
   });
 </script>
@@ -114,12 +112,12 @@ defined('ABSPATH') || exit; ?>
 
   <div class="flexify-checkout-bank-slip-linecode">
     <span class="wc-linecode-title"><?php echo __( 'Linha digitável do boleto', 'module-inter-bank-for-flexify-checkout' ); ?></span>
-    <textarea id="wc-linecode-field" rows="2"><?php echo $payment_line; ?></textarea>
+    <textarea id="wc-linecode-field" rows="2" readonly><?php echo $payment_line; ?></textarea>
     <button class="wc-copy-linecode-button" data-clipboard-target="#wc-linecode-field" data-text="<?php echo __( 'Copiar linha digitável do boleto', 'module-inter-bank-for-flexify-checkout' ); ?>"><?php echo __( 'Copiar linha digitável do boleto', 'module-inter-bank-for-flexify-checkout' ); ?></button>
   </div>
 
   <div class="flexify-checkout-pix-copia-cola">
-    <textarea id="wc-pix-copia-cola-field" rows="2"><?php echo $pix_copia_cola; ?></textarea>
+    <textarea id="wc-pix-copia-cola-field" rows="2" readonly><?php echo $pix_copia_cola; ?></textarea>
     <button class="wc-copy-pix-copia-cola-button" data-clipboard-target="#wc-pix-copia-cola-field" data-text="<?php echo __( 'Copiar Pix Copia e Cola', 'module-inter-bank-for-flexify-checkout' ); ?>"><?php echo __( 'Copiar Pix Copia e Cola', 'module-inter-bank-for-flexify-checkout' ); ?></button>
   </div>
 </section>

@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: Módulo adicional banco Inter para Flexify Checkout para "
 "WooCommerce\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-24 22:45+0000\n"
+"POT-Creation-Date: 2024-08-22 15:41+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -17,25 +17,24 @@ msgstr ""
 "X-Loco-Version: 2.6.11; wp-6.6\n"
 "X-Domain: module-inter-bank-for-flexify-checkout"
 
-#: inc/Bank_Slip/Print_Bank_Slip.php:135
+#: inc/Bank_Slip/Print_Bank_Slip.php:139
 msgid "<h1>Ocorreu um erro!</h1>"
 msgstr ""
 
-#: module-inter-bank-for-flexify-checkout.php:249
+#: module-inter-bank-for-flexify-checkout.php:229
 msgid ""
-"<strong>Módulo adicional banco Inter para Flexify Checkout para "
-"WooCommerce</strong> requer a versão do PHP 7.4 ou maior. Contate o suporte "
-"da sua hospedagem para realizar a atualização."
+"<strong>Flexify Checkout - Inter addon</strong> requer a versão do PHP 7.4 "
+"ou maior. Contate o suporte da sua hospedagem para realizar a atualização."
 msgstr ""
 
-#: module-inter-bank-for-flexify-checkout.php:234
+#: module-inter-bank-for-flexify-checkout.php:214
 msgid ""
-"<strong>Módulo adicional banco Inter para Flexify Checkout para "
-"WooCommerce</strong> requer o plugin Flexify Checkout para WooCommerce."
+"<strong>Flexify Checkout - Inter addon</strong> requer o plugin Flexify "
+"Checkout para WooCommerce."
 msgstr ""
 
-#: inc/Cron/Schedule.php:96 inc/Cron/Schedule.php:145
-msgid "[EXPERIMENTAL] Prazo para pagamento expirou."
+#: inc/Cron/Schedule.php:132 inc/Cron/Schedule.php:194
+msgid "[EXPERIMENTAL] Payment deadline expired."
 msgstr ""
 
 #: inc/Gateways/Base_Gateway.php:168
@@ -47,24 +46,42 @@ msgstr ""
 msgid "A URL do webhook foi atualizada. URL anterior: %s"
 msgstr ""
 
-#: core/class-updater.php:252
-msgid ""
-"A versão do plugin Módulo adicional banco Inter para Flexify Checkout para "
-"WooCommerce é a mais recente."
+#: inc/Core/Updater.php:252
+msgid "A versão do plugin Flexify Checkout - Inter addon é a mais recente."
 msgstr ""
 
-#: templates/checkout/pix-details.php:335
+#: templates/checkout/pix-details.php:383
 msgid ""
 "Abra o app do seu banco ou instituição financeira e <strong>entre no "
 "ambiente Pix</strong>."
 msgstr ""
 
-#: templates/checkout/pix-details.php:308
+#: templates/checkout/pix-details.php:356
 msgid "Aguardando sua transferência via Pix"
+msgstr ""
+
+#: inc/Core/Ajax.php:63
+msgid "Arquivo carregado com sucesso."
+msgstr ""
+
+#: inc/Core/Ajax.php:70
+msgid "Arquivo inválido. O arquivo deve ser um .crt ou .key."
+msgstr ""
+
+#: inc/Core/Ajax.php:138
+msgid "Arquivos removidos com sucesso!"
 msgstr ""
 
 #: inc/Gateways/Bank_Slip.php:66
 msgid "Ativar boleto Banco Inter"
+msgstr ""
+
+#: inc/Core/Admin.php:302
+msgid "Ativar recebimento de pagamentos com boleto bancário + Pix"
+msgstr ""
+
+#: inc/Core/Admin.php:237
+msgid "Ativar recebimento de pagamentos com Pix"
 msgstr ""
 
 #: inc/Gateways/Pix.php:83
@@ -73,6 +90,28 @@ msgstr ""
 
 #: inc/Gateways/Bank_Slip.php:64 inc/Gateways/Pix.php:81
 msgid "Ativar/Desativar"
+msgstr ""
+
+#: inc/Core/Admin.php:109
+msgid ""
+"Ative essa opção para definir a integração como modo Produção (Operacional) "
+"ou desativado para Sandbox (Testes)."
+msgstr ""
+
+#: inc/Core/Admin.php:311
+msgid ""
+"Ative esta opção para configurar recibimentos via boleto bancário com QR "
+"code Pix no boleto e aprovação automática."
+msgstr ""
+
+#: inc/Core/Admin.php:238
+msgid ""
+"Ative esta opção para configurar recibimentos via Pix com aprovação "
+"automática gratuitamente (Disponível apenas no Brasil)."
+msgstr ""
+
+#: inc/Core/Admin.php:97
+msgid "Ative o modo depuração para salvar o registro de requisições da API."
 msgstr ""
 
 #: inc/Gateways/Bank_Slip.php:35
@@ -88,12 +127,40 @@ msgstr ""
 msgid "Certificados não encontrados. O caminho informado é inválido."
 msgstr ""
 
+#: inc/Core/Admin.php:121
+msgid "Chave aleatória ClientID da API do banco Inter."
+msgstr ""
+
+#: inc/Core/Admin.php:131
+msgid "Chave aleatória ClientSecret da API do banco Inter."
+msgstr ""
+
 #: inc/Gateways/Pix.php:541
 msgid "Chave inválida!"
 msgstr ""
 
-#: templates/checkout/pix-details.php:362
+#: inc/Core/Admin.php:280
+msgid ""
+"Chave Pix associada ao banco Inter que receberá o pagamento. Para chaves do "
+"tipo celular ou CNPJ, utilize apenas números."
+msgstr ""
+
+#: templates/checkout/pix-details.php:410
 msgid "Clique para copiar"
+msgstr ""
+
+#. Description of the plugin
+msgid ""
+"Comece a receber via Pix e Boleto com aprovação imediata e sem cobrança de "
+"taxas com o Inter Empresas, exclusivo para Flexify Checkout."
+msgstr ""
+
+#: module-inter-bank-for-flexify-checkout.php:198
+msgid "Configurar"
+msgstr ""
+
+#: inc/Core/Admin.php:87
+msgid "Configure as formas de pagamento disponíveis:"
 msgstr ""
 
 #: inc/Gateways/Base_Gateway.php:156
@@ -102,23 +169,42 @@ msgid ""
 "webhooks."
 msgstr ""
 
-#: templates/checkout/pix-details.php:352
+#: templates/checkout/pix-details.php:400
 msgid ""
 "Confirme as informações e <strong>finalize o pagamento</strong>. Pode "
 "demorar alguns minutos até que o pagamento seja confirmado. Iremos avisar "
 "você!"
 msgstr ""
 
-#: templates/checkout/bank-slip-details.php:118
+#: templates/checkout/bank-slip-details.php:116
 msgid "Copiar linha digitável do boleto"
 msgstr ""
 
-#: templates/checkout/bank-slip-details.php:123
+#: templates/checkout/bank-slip-details.php:121
 msgid "Copiar Pix Copia e Cola"
 msgstr ""
 
 #: inc/API/Bank_Slip_API.php:179
 msgid "Dados da cobrança não encontrados na resposta da API"
+msgstr ""
+
+#: inc/Core/Admin.php:260 inc/Core/Admin.php:333
+msgid ""
+"Descrição da forma de pagamento que o usuário verá na finalização de compra."
+msgstr ""
+
+#: inc/Core/Admin.php:151
+msgid ""
+"Envie sua chave e certificado que você recebeu do banco Inter ao criar a "
+"aplicação."
+msgstr ""
+
+#: inc/Core/Ajax.php:86
+msgid "Erro ao carregar o arquivo. A ação não foi acionada corretamente."
+msgstr ""
+
+#: inc/Core/Ajax.php:78
+msgid "Erro ao carregar o arquivo. O arquivo não foi enviado."
 msgstr ""
 
 #: inc/Gateways/Bank_Slip.php:353
@@ -141,11 +227,11 @@ msgstr ""
 msgid "Erro ao consultar Pix no Banco Inter: %s. Não haverá nova tentativa."
 msgstr ""
 
-#: inc/Bank_Slip/Print_Bank_Slip.php:135
+#: inc/Bank_Slip/Print_Bank_Slip.php:139
 msgid "Erro no boleto"
 msgstr ""
 
-#: templates/checkout/pix-details.php:344
+#: templates/checkout/pix-details.php:392
 msgid ""
 "Escolha a opção <strong> Pagar com QR Code</strong> e escaneie o código "
 "<span class=\"flexify-checkout-interpix-mobile-only\"> abaixo</span><span "
@@ -153,16 +239,14 @@ msgid ""
 "o recurso <strong>Pix Copia e Cola</strong>."
 msgstr ""
 
-#: templates/checkout/pix-details.php:342
+#: templates/checkout/pix-details.php:390
 msgid ""
 "Escolha a opção <strong>Pix Copia e Cola</strong> e insira o texto "
 "acima<strong></strong>."
 msgstr ""
 
-#. Description of the plugin
-msgid ""
-"Extensão que adiciona a forma de pagamento via Pix e Boleto do banco Inter "
-"para lojas WooCommerce exclusivo para Flexify Checkout."
+#. Name of the plugin
+msgid "Flexify Checkout - Inter addon"
 msgstr ""
 
 #. Author URI of the plugin
@@ -181,7 +265,13 @@ msgstr ""
 msgid "Informe a chave Pix antes de consultar o webhook"
 msgstr ""
 
-#: inc/API/Bank_Slip_API.php:25 inc/API/Pix_API.php:25
+#: inc/Core/Admin.php:141
+msgid ""
+"Informe a data de quando irá expirar as credenciais da aplicação, assim "
+"poderemos te avisar 7 dias antes das credenciais serem revogadas."
+msgstr ""
+
+#: inc/API/Bank_Slip_API.php:25 inc/API/Pix_API.php:30
 msgid "Informe seu documento para prosseguir."
 msgstr ""
 
@@ -189,8 +279,14 @@ msgstr ""
 msgid "Linha digitável"
 msgstr ""
 
-#: templates/checkout/bank-slip-details.php:116
+#: templates/checkout/bank-slip-details.php:114
 msgid "Linha digitável do boleto"
+msgstr ""
+
+#: inc/Core/Admin.php:353
+msgid ""
+"Mensagem do rodapé do boleto bancário. Use a variável {order_id} para "
+"inserir o número do pedido."
 msgstr ""
 
 #. Author of the plugin
@@ -205,21 +301,17 @@ msgstr ""
 msgid "Método de pagamento inválido para criar endpoint"
 msgstr ""
 
-#. Name of the plugin
-msgid "Módulo adicional banco Inter para Flexify Checkout para WooCommerce"
-msgstr ""
-
-#: inc/Bank_Slip/Print_Bank_Slip.php:111
+#: inc/Bank_Slip/Print_Bank_Slip.php:115
 #, php-format
 msgid ""
 "Não foi possível buscar o PDF do boleto. Por favor, tente mais tarde ou "
 "realize o pagamento com a linha digitável: <br /><br /> <code>%s</code>"
 msgstr ""
 
-#: core/class-updater.php:259
+#: inc/Core/Updater.php:259
 msgid ""
-"Não foi possível verificar atualizações para o plugin Módulo adicional banco "
-"Inter para Flexify Checkout para WooCommerce."
+"Não foi possível verificar atualizações para o plugin Flexify Checkout - "
+"Inter addon."
 msgstr ""
 
 #: inc/API/Bank_Slip_API.php:91
@@ -228,7 +320,7 @@ msgid ""
 "novamente mais tarde."
 msgstr ""
 
-#: inc/API/Bank_Slip_API.php:229
+#: inc/API/Bank_Slip_API.php:231
 msgid "Ocorreu um erro ao consultar boletos: "
 msgstr ""
 
@@ -240,7 +332,7 @@ msgstr ""
 msgid "Ocorreu um erro ao consultar o boleto PDF"
 msgstr ""
 
-#: inc/API/Pix_API.php:91
+#: inc/API/Pix_API.php:96
 msgid "Ocorreu um erro ao consultar o pix"
 msgstr ""
 
@@ -248,7 +340,7 @@ msgstr ""
 msgid "Ocorreu um erro ao consultar os dados da cobrança"
 msgstr ""
 
-#: inc/API/API_Base.php:113
+#: inc/API/API_Base.php:114
 msgid ""
 "Ocorreu um erro ao entrar em contato com o Banco emissor. Por favor, tente "
 "novamente"
@@ -258,7 +350,7 @@ msgstr ""
 msgid "Ocorreu um erro ao gerar o boleto. Tente novamente."
 msgstr ""
 
-#: inc/API/Pix_API.php:63
+#: inc/API/Pix_API.php:68
 msgid "Ocorreu um erro ao gerar o código Pix. Tente novamente."
 msgstr ""
 
@@ -275,25 +367,37 @@ msgstr ""
 msgid "Ocorreu um erro ao processar os dados do boleto. Tente novamente"
 msgstr ""
 
-#: inc/API/Pix_API.php:69
+#: inc/API/Pix_API.php:74
 msgid "Ocorreu um erro ao processar os dados do Pix. Tente novamente"
 msgstr ""
 
-#: inc/API/API_Base.php:182
+#: inc/Core/Ajax.php:145
+msgid "Ocorreu um erro ao remover os arquivos."
+msgstr ""
+
+#: inc/API/API_Base.php:183
 msgid "Ocorreu um erro de processamento: "
 msgstr ""
 
-#: inc/Cron/Schedule.php:94 inc/Cron/Schedule.php:143
-msgid "Pagamento confirmado (com atraso) pelo Banco Inter."
+#: inc/Core/Ajax.php:144
+msgid "Ops! Ocorreu um erro."
+msgstr ""
+
+#: inc/Core/Ajax.php:137
+msgid "Os arquivos foram removidos."
 msgstr ""
 
 #: inc/Gateways/Bank_Slip.php:381 inc/Gateways/Pix.php:485
 msgid "Pagamento confirmado pelo Banco Inter."
 msgstr ""
 
-#: inc/API/Pix_API.php:40
+#: inc/API/Pix_API.php:45
 #, php-format
 msgid "Pagamento do pedido #%s."
+msgstr ""
+
+#: inc/Cron/Schedule.php:130 inc/Cron/Schedule.php:192
+msgid "Payment confirmed (delayed) by Inter bank."
 msgstr ""
 
 #: inc/API/Bank_Slip_API.php:153
@@ -304,11 +408,11 @@ msgstr ""
 msgid "Pedido consultado!"
 msgstr ""
 
-#: inc/Bank_Slip/Print_Bank_Slip.php:98
+#: inc/Bank_Slip/Print_Bank_Slip.php:102
 msgid "Pedido incompatível com boletos."
 msgstr ""
 
-#: inc/Bank_Slip/Print_Bank_Slip.php:94
+#: inc/Bank_Slip/Print_Bank_Slip.php:98
 msgid "Pedido inválido."
 msgstr ""
 
@@ -316,8 +420,12 @@ msgstr ""
 msgid "Pedido não encontrado"
 msgstr ""
 
-#: inc/Bank_Slip/Print_Bank_Slip.php:88
+#: inc/Bank_Slip/Print_Bank_Slip.php:92
 msgid "Pedido não encontrado."
+msgstr ""
+
+#: inc/API/Pix_API.php:48
+msgid "Pedido: "
 msgstr ""
 
 #: inc/Gateways/Pix.php:47
@@ -329,11 +437,23 @@ msgstr ""
 msgid "Pix Banco Inter gerado. Copia e Cola: <code>%s</code>."
 msgstr ""
 
-#: templates/checkout/pix-details.php:360
+#: templates/checkout/pix-details.php:408
 msgid "Pix Copia e cola"
 msgstr ""
 
-#: templates/checkout/pix-details.php:325
+#: inc/Core/Admin.php:363
+msgid "Prazo máximo para pagamento do boleto em dias."
+msgstr ""
+
+#: inc/Core/Admin.php:290
+msgid "Prazo máximo para pagamento do Pix em minutos."
+msgstr ""
+
+#: inc/Core/Admin.php:307
+msgid "Pro"
+msgstr ""
+
+#: templates/checkout/pix-details.php:373
 msgid "QR Code para pagamento"
 msgstr ""
 
@@ -351,21 +471,39 @@ msgstr ""
 msgid "Requisição inválida"
 msgstr ""
 
-#: inc/API/API_Base.php:202
+#: inc/API/Pix_API.php:52
+msgid "Site: "
+msgstr ""
+
+#: inc/API/API_Base.php:203
 msgid "Tente novamente."
 msgstr ""
 
-#: core/class-updater.php:237
+#: inc/Core/Admin.php:270 inc/Core/Admin.php:343
 msgid ""
-"Uma nova versão do plugin Módulo adicional banco Inter para Flexify Checkout "
-"para WooCommerce está disponível."
+"Texto exibido no e-mail junto do botão de copiar código Copia e Cola do Pix."
+msgstr ""
+
+#: inc/Core/Admin.php:250
+msgid ""
+"Título que o usuário verá na finalização de compra (Disponível apenas no "
+"Brasil)."
+msgstr ""
+
+#: inc/Core/Admin.php:323
+msgid "Título que o usuário verá na finalização de compra."
+msgstr ""
+
+#: inc/Core/Updater.php:237
+msgid ""
+"Uma nova versão do plugin Flexify Checkout - Inter addon está disponível."
 msgstr ""
 
 #: inc/Gateways/Bank_Slip.php:199
 msgid "Ver boleto"
 msgstr ""
 
-#: templates/checkout/bank-slip-details.php:112
+#: templates/checkout/bank-slip-details.php:110
 msgid "Ver boleto (PDF)"
 msgstr ""
 
@@ -373,11 +511,11 @@ msgstr ""
 msgid "Ver pix"
 msgstr ""
 
-#: templates/checkout/pix-details.php:316
+#: templates/checkout/pix-details.php:364
 msgid "Ver QR Code no navegador"
 msgstr ""
 
-#: core/class-updater.php:208
+#: inc/Core/Updater.php:208
 msgid "Verificar atualizações"
 msgstr ""
 
@@ -388,6 +526,10 @@ msgstr ""
 #: inc/Gateways/Base_Gateway.php:233
 msgid ""
 "Você já pode fechar essa página. A consulta será feita em segundo plano."
+msgstr ""
+
+#: inc/Core/Assets.php:43
+msgid "Você realmente deseja remover os certificados?"
 msgstr ""
 
 #: inc/Gateways/Base_Gateway.php:186

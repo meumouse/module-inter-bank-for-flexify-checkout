@@ -2,7 +2,7 @@
 
 defined('ABSPATH') || exit;
 
-$base = get_option( 'woocommerce_email_base_color' );
+$base = get_option('woocommerce_email_base_color');
 $base_text = wc_light_or_dark( $base, '#202020', '#ffffff' );
 
 // Recupere a hora do pedido
@@ -211,8 +211,6 @@ $pix_time_remaining = $pix_expiration_time - time(); ?>
 .flexify-checkout-countdown-pix {
   display: flex;
   align-items: center;
-  background-color: #ffba08;
-  color: #fff;
   padding: 0 1rem;
   border-radius: 0.5rem;
 }
@@ -227,13 +225,53 @@ $pix_time_remaining = $pix_expiration_time - time(); ?>
 #countdown-pix {
   font-size: 1.75rem;
 }
+
+.base-timer {
+  position: relative;
+  width: 8rem;
+  height: 8rem;
+  margin: auto;
+}
+
+.base-timer__svg {
+  transform: rotate(90deg);
+}
+
+.base-timer__circle {
+  fill: none;
+  stroke: none;
+}
+
+.base-timer__path-elapsed {
+  stroke-width: 5px;
+  stroke: transparent;
+}
+
+.base-timer__path-remaining {
+  stroke-width: 5px;
+  stroke-linecap: round;
+  transition: 1s linear all;
+  stroke: #343A40;
+}
+
+.base-timer__label {
+  position: absolute;
+  width: 8rem;
+  height: 8rem;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: #343A40;
+}
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.10/dist/clipboard.min.js"></script>
 
-<script type="application/javascript">
-  // enable copy button
-  var clipboard = new ClipboardJS( '.pix-copy' );
+<script type="application/javascript" class="flexify-checkout-clipboard-js skip-lazy" data-no-defer="1">
+  // Enable copy button
+  var clipboard = new ClipboardJS('.pix-copy');
 
   clipboard.on( 'success', function() {
     const button = jQuery('.pix-copy-button');
@@ -245,64 +283,74 @@ $pix_time_remaining = $pix_expiration_time - time(); ?>
       button.text( buttonText );
     }, 1000);
   });
-</script>
 
-<script>
   var pix_time_remaining = <?php echo $pix_time_remaining; ?>;
-  // construct countdown timer
-  var x = setInterval( function() {
+  var timePassed = 0;
+  var timeLeft = pix_time_remaining;
+  var timerInterval = null;
+  var FULL_DASH_ARRAY = 283;
+  
+  function formatTime(time) {
+    const minutes = Math.floor(time / 60);
+    let seconds = time % 60;
 
-    // Calcule os dias, horas, minutos e segundos restantes
-    var days = Math.floor(pix_time_remaining / (60 * 60 * 24));
-    var hours = Math.floor((pix_time_remaining % (60 * 60 * 24)) / (60 * 60));
-    var minutes = Math.floor((pix_time_remaining % (60 * 60)) / 60);
-    var seconds = Math.floor(pix_time_remaining % 60);
-
-    // Construa a string da contagem regressiva
-    var countdownString = '';
-
-    // Se houver dias restantes, adicione à string
-    if (days > 0) {
-      countdownString += days + "d ";
+    if (seconds < 10) {
+      seconds = `0${seconds}`;
     }
 
-    // Se houver horas restantes, adicione à string
-    if (hours > 0) {
-      countdownString += hours + "h ";
-    }
+    return `${minutes}:${seconds}`;
+  }
 
-    // Se houver minutos restantes, adicione à string
-    if (minutes > 0) {
-      countdownString += minutes + "m ";
-    }
+  function startTimer() {
+    timerInterval = setInterval(() => {
+      timePassed += 1;
+      timeLeft = pix_time_remaining - timePassed;
 
-    // Se houver segundos restantes, adicione à string
-    if (seconds > 0) {
-      countdownString += seconds + "s ";
-    }
+      document.getElementById("base-timer-label").innerHTML = formatTime(timeLeft);
+      setCircleDasharray();
 
-    // Exiba a contagem regressiva
-    document.getElementById("countdown-pix").innerHTML = countdownString;
+      if (timeLeft <= 0) {
+        clearInterval(timerInterval);
+        document.getElementById("countdown-pix").innerHTML = "Prazo para pagamento expirado.";
+        document.querySelector(".flexify-checkout-interpix-title").remove();
+        document.querySelector(".flexify-checkout-interpix-container").remove();
+        document.querySelector(".flexify-checkout-interpix-copy-paste").remove();
+      }
+    }, 1000);
+  }
 
-    // Reduza o tempo restante em 1 segundo
-    pix_time_remaining--;
+  function setCircleDasharray() {
+    const circleDasharray = `${(
+      calculateTimeFraction() * FULL_DASH_ARRAY
+    ).toFixed(0)} 283`;
+    document
+      .getElementById("base-timer-path-remaining")
+      .setAttribute("stroke-dasharray", circleDasharray);
+  }
 
-    // Se o tempo restante for menor ou igual a zero, pare a contagem regressiva
-    if (pix_time_remaining <= 0) {
-      clearInterval(x);
-      document.getElementById("countdown-pix").innerHTML = "Prazo para pagamento expirado.";
-      document.querySelector(".flexify-checkout-interpix-title").remove();
-      document.querySelector(".flexify-checkout-interpix-container").remove();
-      document.querySelector(".flexify-checkout-interpix-copy-paste").remove();
-    }
-  }, 1000);
+  function calculateTimeFraction() {
+    const rawTimeFraction = timeLeft / pix_time_remaining;
+    return rawTimeFraction - (1 / pix_time_remaining) * (1 - rawTimeFraction);
+  }
+
+  document.addEventListener("DOMContentLoaded", function() {
+    document.getElementById("base-timer-label").innerHTML = formatTime(timeLeft);
+    startTimer();
+  });
 </script>
-
 
 <section id="<?php echo esc_attr( $id ); ?>-thankyou">
-  <div class="flexify-checkout-countdown-pix">
-    <svg class="countdown-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="m20.145 8.27 1.563-1.563-1.414-1.414L18.586 7c-1.05-.63-2.274-1-3.586-1-3.859 0-7 3.14-7 7s3.141 7 7 7 7-3.14 7-7a6.966 6.966 0 0 0-1.855-4.73zM15 18c-2.757 0-5-2.243-5-5s2.243-5 5-5 5 2.243 5 5-2.243 5-5 5z"></path><path d="M14 10h2v4h-2zm-1-7h4v2h-4zM3 8h4v2H3zm0 8h4v2H3zm-1-4h3.99v2H2z"></path></svg>
-    <div id="countdown-pix"></div>
+  <div id="countdown-pix" class="flexify-checkout-countdown-pix">
+    <div class="base-timer">
+      <svg class="base-timer__svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <g class="base-timer__circle">
+          <circle class="base-timer__path-elapsed" cx="50" cy="50" r="45"></circle>
+          <path id="base-timer-path-remaining" stroke-dasharray="283" class="base-timer__path-remaining"
+                d="M 50, 50 m -45, 0 a 45,45 0 1,0 90,0 a 45,45 0 1,0 -90,0"></path>
+        </g>
+      </svg>
+      <span id="base-timer-label" class="base-timer__label"></span>
+    </div>
   </div>
 
 	<h3 class="flexify-checkout-interpix-title"><?php echo __( 'Aguardando sua transferência via Pix', 'module-inter-bank-for-flexify-checkout' ); ?></h3>
@@ -321,7 +369,7 @@ $pix_time_remaining = $pix_expiration_time - time(); ?>
 	<div class="flexify-checkout-interpix-container">
     <?php if ( ! $is_email && $pix_image ) { ?>
       <div class="qr-code">
-        <img src="<?php echo esc_attr( $pix_image ); // base64 image ?>"
+        <img class="flexify-checkout-pix qr-code" src="<?php echo esc_attr( $pix_image ); ?>"
           alt="<?php echo __( 'QR Code para pagamento', 'module-inter-bank-for-flexify-checkout' ); ?>"
         />
       </div>

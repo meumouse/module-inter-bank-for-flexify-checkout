@@ -8,7 +8,11 @@ use MeuMouse\Flexify_Checkout\Inter_Bank;
 defined('ABSPATH') || exit;
 
 /**
+ * Print bank slip classs
  * 
+ * @since 1.0.0
+ * @version 1.2.0
+ * @package MeuMouse.com
  */
 class Print_Bank_Slip {
 
@@ -162,10 +166,10 @@ class Print_Bank_Slip {
    * @return void
    */
   public function maybe_flush_rewrite_rules() {
-    if ( FCW_MODULE_INTER_VERSION !== get_option( 'module_inter_bank_flush_version' ) ) {
+    if ( FD_MODULE_INTER_VERSION !== get_option( 'module_inter_bank_flush_version' ) ) {
       flush_rewrite_rules();
 
-      update_option( 'module_inter_bank_flush_version', FCW_MODULE_INTER_VERSION );
+      update_option( 'module_inter_bank_flush_version', FD_MODULE_INTER_VERSION );
     }
   }
 }

@@ -205,7 +205,7 @@ msgid "Método de pagamento inválido para criar endpoint"
 msgstr ""
 
 #. Name of the plugin
-msgid "Módulo adicional banco Inter para Flexify Checkout para WooCommerce"
+msgid "Flexify Checkout - Inter addon"
 msgstr ""
 
 #: inc/Bank_Slip/Print_Bank_Slip.php:111

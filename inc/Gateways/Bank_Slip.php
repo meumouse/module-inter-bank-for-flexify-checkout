@@ -7,7 +7,7 @@ use MeuMouse\Flexify_Checkout\Inter_Bank;
 use MeuMouse\Flexify_Checkout\Inter_Bank\API\Bank_Slip_API;
 use MeuMouse\Flexify_Checkout\Inter_Bank\API\Webhooks_API;
 use MeuMouse\Flexify_Checkout\Inter_Bank\Bank_Slip\Print_Bank_Slip;
-use MeuMouse\Flexify_Checkout\Init\Init;
+use MeuMouse\Flexify_Checkout\Init;
 
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
@@ -30,7 +30,7 @@ class Bank_Slip extends Base_Gateway {
 
     // compatibility with migration from another plugin
     $this->id = 'interboleto';
-    $this->icon = apply_filters( 'inter_bank_ticket_icon', FCW_MODULE_INTER_ASSETS . 'img/bank-slip.svg' );
+    $this->icon = apply_filters( 'inter_bank_ticket_icon', FD_MODULE_INTER_ASSETS . 'img/bank-slip.svg' );
     $this->has_fields = false;
     $this->method_title = __( 'Boleto Banco Inter', 'module-inter-bank-for-flexify-checkout' );
     $this->method_description = __( 'Receba pagamentos no Banco Inter com aprovação automática.', 'module-inter-bank-for-flexify-checkout' );
@@ -171,7 +171,7 @@ class Bank_Slip extends Base_Gateway {
         'pix_copia_cola' => $order->get_meta('inter_pix_copia_cola'),
       ),
       '',
-      FCW_MODULE_INTER_TPL_PATH
+      FD_MODULE_INTER_TPL_PATH
     );
   }
 
@@ -239,7 +239,7 @@ class Bank_Slip extends Base_Gateway {
         'has_installments' => '$has_installments',
       ),
       '',
-      FCW_MODULE_INTER_TPL_PATH
+      FD_MODULE_INTER_TPL_PATH
     );
   }
 
@@ -273,7 +273,7 @@ class Bank_Slip extends Base_Gateway {
         'has_installments' => '$has_installments',
       ),
       '',
-      FCW_MODULE_INTER_TPL_PATH
+      FD_MODULE_INTER_TPL_PATH
     );
   }
 
@@ -315,7 +315,7 @@ class Bank_Slip extends Base_Gateway {
     try {
       $response = [
         'message' => 'Success!',
-        'version' => FCW_MODULE_INTER_VERSION,
+        'version' => FD_MODULE_INTER_VERSION,
       ];
 
       if ( ! isset( $content['nossoNumero'], $content['situacao'] ) ) {

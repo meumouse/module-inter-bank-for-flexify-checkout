@@ -5,7 +5,7 @@ namespace MeuMouse\Flexify_Checkout\Inter_Bank\API;
 use Exception;
 use MeuMouse\Flexify_Checkout\Inter_Bank\Traits\Helpers;
 use MeuMouse\Flexify_Checkout\Inter_Bank\Traits\Logger;
-use MeuMouse\Flexify_Checkout\Init\Init;
+use MeuMouse\Flexify_Checkout\Init;
 
 defined('ABSPATH') || exit;
 
@@ -64,6 +64,7 @@ abstract class API_Base {
     add_action( 'http_api_curl', array( $this, 'inter_http_api_curl' ), 10, 3 );
 	}
 
+  
 	/**
 	 * Get API URL
 	 *

@@ -203,6 +203,7 @@ class Bank_Slip_API extends API_Base {
     return json_decode( $response['body'] );
   }
 
+
   /**
    * Get expire date
    *
@@ -214,6 +215,7 @@ class Bank_Slip_API extends API_Base {
   public function get_expire_date( $additional_days ) {
     return date( 'Y-m-d', ( strtotime ( $additional_days . ' weekdays' ) ) );
   }
+  
 
   /**
    * Get all bank slips
