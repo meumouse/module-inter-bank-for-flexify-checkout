@@ -15,7 +15,7 @@ defined('ABSPATH') || exit;
  * payments and sending reminders for expiring credentials.
  * 
  * @since 1.0.0
- * @version 1.2.0
+ * @version 1.2.2
  * @package MeuMouse.com
  */
 class Schedule {
@@ -28,6 +28,7 @@ class Schedule {
    * conditions to run certain tasks, such as the presence of an expiration date for credentials.
    * 
    * @since 1.0.0
+   * @version 1.2.0
    * @return void
    */
   public function __construct() {
@@ -256,42 +257,49 @@ class Schedule {
 
 
   /**
-   * Schedule an email reminder for Inter bank credentials expiration.
-   * 
-   * Schedules a single event to send an email reminder 7 days before the expiration date
-   * of the Inter bank credentials.
+   * Schedules a single event to send an email reminder 7 days before the expiration date of the Inter bank credentials.
    * 
    * @since 1.2.0
+   * @version 1.2.2
    * @return void
    */
   public function schedule_remind_inter_bank_credentials() {
     $expire_date = Init::get_setting('inter_bank_expire_date');
 
-    // Convert date to Y-m-d format
-    $expire_date_formatted = \DateTime::createFromFormat('d/m/Y', $expire_date)->format('Y-m-d');
+    // Get the date format from WordPress settings
+    $wp_date_format = get_option('date_format');
 
-    // Subtract 7 days from the expiration date
-    $send_date_email = date( 'Y-m-d', strtotime( '-7 days', strtotime( $expire_date_formatted ) ) );
+    // Convert date to Y-m-d format using WordPress date format
+    $date_object = \DateTime::createFromFormat( $wp_date_format, $expire_date );
 
-    // Schedule email sending
-    $timestamp_send_email = strtotime( $send_date_email . ' 08:00:00' );
-    wp_schedule_single_event( $timestamp_send_email, 'remind_expire_inter_bank_credentials_event' );
+    // Check if date_object is valid
+    if ( $date_object ) {
+        $expire_date_formatted = $date_object->format('Y-m-d');
+
+        // Subtract 7 days from the expiration date
+        $send_date_email = date( 'Y-m-d', strtotime( '-7 days', strtotime( $expire_date_formatted ) ) );
+
+        // Schedule email sending
+        $timestamp_send_email = strtotime( $send_date_email . ' 08:00:00' );
+        wp_schedule_single_event( $timestamp_send_email, 'remind_expire_inter_bank_credentials_event' );
+    } else {
+        // Handle the error case where the date format is incorrect
+        error_log( 'Invalid date format for Inter bank credentials expiration date: ' . $expire_date );
+    }
   }
 
 
   /**
-   * Send an email reminder for Inter bank credentials expiration.
-   * 
-   * Sends an email to the site admin reminding them to update the Inter bank credentials
-   * 7 days before their expiration.
+   * Sends an email to the site admin reminding them to update the Inter bank credentials 7 days before their expiration.
    * 
    * @since 1.2.0
+   * @version 1.2.2
    * @return void
    */
   public function remind_expire_inter_bank_credentials() {
     $to = get_option('admin_email');
-    $subject = 'IMPORTANT: Your Inter bank application credentials will expire soon!';
-    $message = 'This is a reminder that your Inter bank module credentials for Flexify Checkout for WooCommerce will expire in 7 days. Please update your credentials to avoid disruption in payment processing.';
+    $subject = 'IMPORTANTE: Suas credenciais do banco Inter irão expirar em breve!';
+    $message = 'Este é um lembrete de que suas credenciais do Flexify Checkout - Inter addon expirarão em 7 dias. Atualize suas credenciais para evitar interrupções no processamento de pagamentos.';
     $headers = array('Content-Type: text/html; charset=UTF-8');
 
     wp_mail( $to, $subject, $message, $headers );

@@ -1,6 +1,6 @@
-# Módulo adicional banco Inter para Flexify Checkout para WooCommerce 
+# Flexify Checkout - Inter addon
 
-Extensão que adiciona a forma de pagamento via Pix e Boleto do banco Inter para lojas WooCommerce exclusivo para Flexify Checkout.
+Comece a receber via Pix e Boleto com aprovação imediata e sem cobrança de taxas com o Inter Empresas, exclusivo para Flexify Checkout.
 
 ### Instalação:
 
@@ -27,6 +27,14 @@ Você pode instalar um plugin WordPress de duas maneiras: via o painel de admini
 * Após seguir essas etapas, o plugin deve estar instalado e funcionando corretamente em seu site WordPress.
 
 ### Registro de alterações (Changelogs):
+
+Versão 1.2.2 (29/08/2024)
+* Correção de bugs
+* Recurso adicionado: Classe Error_Handler para lidar com erros críticos e prevenir quebras no site
+
+Versão 1.2.0 (22/08/2024)
+* Correção de bugs
+* Otimizações
 
 Versão 1.1.0 (24/07/2024)
 * Correção de bugs
