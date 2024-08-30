@@ -1,3 +1,7 @@
+Versão 1.2.5 (30/08/2024)
+* Correção de bugs
+* Recurso removido: Classe Error_Handler
+
 Versão 1.2.2 (29/08/2024)
 * Correção de bugs
 * Recurso adicionado: Classe Error_Handler para lidar com erros críticos e prevenir quebras no site

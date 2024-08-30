@@ -7,7 +7,7 @@
  * Requires Plugins: 		flexify-checkout-for-woocommerce
  * Author: 				    MeuMouse.com
  * Author URI: 			    https://meumouse.com/
- * Version: 			    1.2.2
+ * Version: 			    1.2.5
  * WC requires at least:    6.0.0
  * WC tested up to: 		9.1.2
  * Requires PHP: 			7.4
@@ -24,7 +24,7 @@ defined('ABSPATH') || exit;
  * Add Inter bank payment gateways on WooCommerce
  * 
  * @since 1.0.0
- * @version 1.2.2
+ * @version 1.2.5
  * @package MeuMouse.com
  */
 class Module_Inter_Bank {
@@ -43,7 +43,7 @@ class Module_Inter_Bank {
 	 * @since 1.0.0
 	 * @var string
 	 */
-	public static $version = '1.2.2';
+	public static $version = '1.2.5';
 
   	/**
 	 * Plugin initiated
@@ -65,11 +65,11 @@ class Module_Inter_Bank {
 	 * Construct function
 	 * 
 	 * @since 1.0.0
-	 * @version 1.2.0
+	 * @version 1.2.5
 	 * @return void
 	 */
 	public function __construct() {
-		add_action( 'plugins_loaded', array( $this, 'check_before_init' ), 20 );
+		add_action( 'plugins_loaded', array( $this, 'check_before_init' ), 99 );
 	}
 
 
@@ -77,7 +77,7 @@ class Module_Inter_Bank {
 	 * Check dependencies before activate plugin
 	 * 
 	 * @since 1.0.0
-	 * @version 1.2.2
+	 * @version 1.2.5
 	 * @return void
 	 */
 	public function check_before_init() {
@@ -102,7 +102,6 @@ class Module_Inter_Bank {
 		new \MeuMouse\Flexify_Checkout\Inter_Bank\Bank_Slip\Print_Bank_Slip();
 		new \MeuMouse\Flexify_Checkout\Inter_Bank\Cron\Schedule();
 		new \MeuMouse\Flexify_Checkout\Inter_Bank\Core\Updater();
-		new \MeuMouse\Flexify_Checkout\Inter_Bank\Traits\Error_Handler('module-inter-bank-for-flexify-checkout/module-inter-bank-for-flexify-checkout.php');
 	}
 
 
