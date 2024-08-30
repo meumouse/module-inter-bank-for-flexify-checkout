@@ -5,10 +5,10 @@ namespace MeuMouse\Flexify_Checkout\Inter_Bank\Traits;
 defined('ABSPATH') || exit;
 
 /**
- * Inter bank helpers
+ * Helpers functions
  * 
  * @since 1.0.0
- * @version 1.1.0
+ * @version 1.2.5
  * @package MeuMouse.com
  */
 trait Helpers {
@@ -82,4 +82,24 @@ trait Helpers {
         // Ensures the number has a maximum of 9 digits
         return substr( $phone_number, 0, 9 );
     }
+
+
+	/**
+	 * Generate hash
+	 * 
+	 * @since 1.2.5
+	 * @param int $lenght | Lenght hash
+	 * @return string
+	 */
+	protected function generate_hash( $length ) {
+		$result = '';
+		$characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+		$charactersLength = strlen( $characters );
+
+		for ( $i = 0; $i < $length; $i++ ) {
+			$result .= $characters[wp_rand(0, $charactersLength - 1)];
+		}
+
+		return $result;
+	}
 }
