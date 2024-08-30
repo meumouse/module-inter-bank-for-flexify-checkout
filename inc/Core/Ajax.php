@@ -3,6 +3,7 @@
 namespace MeuMouse\Flexify_Checkout\Inter_Bank\Core;
 
 use MeuMouse\Flexify_Checkout\Init;
+use MeuMouse\Flexify_Checkout\Inter_Bank\Traits\Helpers;
 
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
@@ -11,9 +12,12 @@ defined('ABSPATH') || exit;
  * Handle AJAX calls
  * 
  * @since 1.2.0
+ * @version 1.2.5
  * @package MeuMouse.com
  */
 class Ajax {
+
+   use Helpers;
 
    /**
     * Construct function
@@ -36,6 +40,7 @@ class Ajax {
 	 * Processing files uploaded for Inter Bank module
 	 * 
 	 * @since 1.2.0
+    * @version 1.2.5
 	 * @return void
 	 */
 	public function upload_files_callback() {
@@ -52,26 +57,24 @@ class Ajax {
 				// Checks if it is a .crt or .key file
 				if ( ( $type === "dropzone-crt" && pathinfo( $file["name"], PATHINFO_EXTENSION ) === "crt") || ( $type === "dropzone-key" && pathinfo( $file["name"], PATHINFO_EXTENSION ) === "key" ) ) {
 					$file_tmp_name = $file["tmp_name"];
-					$new_file_name = generate_hash(20) . ( $type === "dropzone-crt" ? ".crt" : ".key" );
+					$new_file_name = $this->generate_hash(20) . ( $type === "dropzone-crt" ? ".crt" : ".key" );
 
 					move_uploaded_file( $file_tmp_name, $upload_path . $new_file_name );
 
-					update_option('flexify_checkout_inter_bank_' . ($type === "dropzone-crt" ? "crt" : "key") . '_file', $new_file_name);
+					update_option('flexify_checkout_inter_bank_' . ( $type === "dropzone-crt" ? "crt" : "key" ) . '_file', $new_file_name);
 
 					$response = array(
 						'status' => 'success',
 						'message' => __( 'Arquivo carregado com sucesso.', 'module-inter-bank-for-flexify-checkout' ),
 					);
-			
-					wp_send_json( $response ); // send response
 				} else {
 					$response = array(
 						'status' => 'invalid_file',
 						'message' => __( 'Arquivo inválido. O arquivo deve ser um .crt ou .key.', 'module-inter-bank-for-flexify-checkout' ),
 					);
-			
-					wp_send_json( $response );
 				}
+
+            wp_send_json( $response );
 			} else {
 				$response = array(
 					'status' => 'error',
