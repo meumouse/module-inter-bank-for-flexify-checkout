@@ -9,7 +9,7 @@ defined('ABSPATH') || exit;
  * Class to make requests to a remote server to get plugin versions and updates
  * 
  * @since 1.0.0
- * @version 1.2.0
+ * @version 1.2.6
  * @package MeuMouse.com
  */
 class Updater {
@@ -27,6 +27,7 @@ class Updater {
      * Construct function
      * 
      * @since 1.0.0
+     * @version 1.2.6
      * @return void
      */
     public function __construct() {
@@ -46,6 +47,7 @@ class Updater {
         add_filter( 'plugins_api', array( $this, 'plugin_info' ), 20, 3 );
         add_filter( 'site_transient_update_plugins', array( $this, 'update_plugin' ) );
         add_action( 'upgrader_process_complete', array( $this, 'purge_cache' ), 10, 2 );
+        add_action( 'load-plugins.php', array( $this, 'purge_cache' ) );
         add_filter( 'plugin_row_meta', array( $this, 'add_check_updates_link'), 10, 2 );
         add_filter( 'all_admin_notices', array( $this, 'check_manual_update_query_arg' ) );
     }
@@ -157,7 +159,6 @@ class Updater {
      * 
      * @since 1.0.0
      * @return string
-     * @package MeuMouse.com
      */
     public function update_plugin( $transient ) {
         if ( empty( $transient->checked ) ) {
@@ -186,12 +187,13 @@ class Updater {
      * Purge cache on update plugin
      * 
      * @since 1.0.0
+     * @version 1.2.6
      * @return void
-     * @package MeuMouse.com
      */
     public function purge_cache( $upgrader, $options ) {
-        if ( $this->cache_allowed && 'update' === $options['action'] && 'plugin' === $options[ 'type' ] ) {
+        if ( $this->cache_allowed && 'update' === $options['action'] && 'plugin' === $options['type'] ) {
             delete_transient( $this->cache_key );
+            elete_transient( $this->cache_data_base_key );
         }
     }
 
@@ -201,7 +203,6 @@ class Updater {
      * 
      * @since 1.0.0
      * @return string
-     * @package MeuMouse.com
      */
     public function add_check_updates_link( $actions, $plugin_file ) {
         if ( $plugin_file === $this->plugin_slug . '/' . $this->plugin_slug . '.php' ) {
@@ -219,16 +220,16 @@ class Updater {
      * @since 1.0.0
      * @return void
      */
-    public function check_manual_update_query_arg($plugins) {
+    public function check_manual_update_query_arg( $plugins ) {
         if (isset($_GET['flexify_checkout_module_inter_check_updates']) && $_GET['flexify_checkout_module_inter_check_updates'] === '1') {
     
             // purge cache before request on server
-            delete_transient($this->cache_key);
-            delete_transient($this->cache_data_base_key);
+            delete_transient( $this->cache_key );
+            delete_transient( $this->cache_data_base_key );
     
             $remote_data = $this->request();
     
-            if ($remote_data) {
+            if ( $remote_data ) {
                 $current_version = $this->version;
                 $latest_version = $remote_data->version;
     

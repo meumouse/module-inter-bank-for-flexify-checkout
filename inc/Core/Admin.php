@@ -12,6 +12,7 @@ defined('ABSPATH') || exit;
  * Add plugin settings to Flexify Checkout admin
  * 
  * @since 1.2.0
+ * @version 1.2.6
  * @package MeuMouse.com
  */
 class Admin {
@@ -77,6 +78,7 @@ class Admin {
     * Add Inter bank settings modal on Flexify Checkout integration tab
     * 
     * @since 1.2.0
+    * @version 1.2.6
     * @return void
     */
    public function add_admin_settings() {
@@ -168,14 +170,12 @@ class Admin {
 
                         <div class="file-list"></div>
 
-                        <form enctype="multipart/form-data" action="upload.php" class="form-inter-bank-files" method="POST">
-                           <div class="drag-and-drop-file">
-                              <div class="custom-file">
-                                 <input type="file" class="custom-file-input" id="upload-file-crt" name="crt_file" hidden>
-                                 <label class="custom-file-label" for="upload-file-crt"><?php echo esc_html( 'Ou clique para procurar seu arquivo', 'module-inter-bank-for-flexify-checkout' ); ?></label>
-                              </div>
+                        <div class="drag-and-drop-file">
+                           <div class="custom-file">
+                              <input type="file" class="custom-file-input" id="upload-file-crt" name="crt_file" hidden>
+                              <label class="custom-file-label" for="upload-file-crt"><?php echo esc_html( 'Ou clique para procurar seu arquivo', 'module-inter-bank-for-flexify-checkout' ); ?></label>
                            </div>
-                        </form>
+                        </div>
                      </div>
                   <?php endif;
 
@@ -188,14 +188,12 @@ class Admin {
 
                         <div class="file-list"></div>
 
-                        <form enctype="multipart/form-data" action="upload.php" class="form-inter-bank-files" method="POST">
-                           <div class="drag-and-drop-file">
-                              <div class="custom-file">
-                                 <input type="file" class="custom-file-input" id="upload-file-key" name="key_file" hidden>
-                                 <label class="custom-file-label" for="upload-file-key"><?php echo esc_html( 'Ou clique para procurar seu arquivo', 'module-inter-bank-for-flexify-checkout' ); ?></label>
-                              </div>
+                        <div class="drag-and-drop-file">
+                           <div class="custom-file">
+                              <input type="file" class="custom-file-input" id="upload-file-key" name="key_file" hidden>
+                              <label class="custom-file-label" for="upload-file-key"><?php echo esc_html( 'Ou clique para procurar seu arquivo', 'module-inter-bank-for-flexify-checkout' ); ?></label>
                            </div>
-                        </form>
+                        </div>
                      </div>
                   <?php endif; ?>
                </div>
@@ -297,7 +295,7 @@ class Admin {
                      <tr class="container-separator"></tr>
 
                      <!-- START INTER BANK SLIP -->
-                        <tr>
+                     <tr>
                         <th>
                            <?php echo esc_html__( 'Ativar recebimento de pagamentos com boleto bancário + Pix', 'module-inter-bank-for-flexify-checkout' );
                            
