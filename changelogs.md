@@ -1,3 +1,6 @@
+Versão 1.2.7 (02/09/2024)
+* Correção de bugs
+
 Versão 1.2.6 (30/08/2024)
 * Correção de bugs
 
