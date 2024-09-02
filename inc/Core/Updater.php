@@ -9,7 +9,7 @@ defined('ABSPATH') || exit;
  * Class to make requests to a remote server to get plugin versions and updates
  * 
  * @since 1.0.0
- * @version 1.2.6
+ * @version 1.2.7
  * @package MeuMouse.com
  */
 class Updater {
@@ -21,7 +21,6 @@ class Updater {
     public $cache_allowed;
     public $time_cache;
     public $update_available;
-    private static $instance;
 
     /**
      * Construct function
@@ -47,7 +46,6 @@ class Updater {
         add_filter( 'plugins_api', array( $this, 'plugin_info' ), 20, 3 );
         add_filter( 'site_transient_update_plugins', array( $this, 'update_plugin' ) );
         add_action( 'upgrader_process_complete', array( $this, 'purge_cache' ), 10, 2 );
-        add_action( 'load-plugins.php', array( $this, 'purge_cache' ) );
         add_filter( 'plugin_row_meta', array( $this, 'add_check_updates_link'), 10, 2 );
         add_filter( 'all_admin_notices', array( $this, 'check_manual_update_query_arg' ) );
     }
@@ -187,13 +185,13 @@ class Updater {
      * Purge cache on update plugin
      * 
      * @since 1.0.0
-     * @version 1.2.6
+     * @version 1.2.7
      * @return void
      */
     public function purge_cache( $upgrader, $options ) {
         if ( $this->cache_allowed && 'update' === $options['action'] && 'plugin' === $options['type'] ) {
             delete_transient( $this->cache_key );
-            elete_transient( $this->cache_data_base_key );
+            delete_transient( $this->cache_data_base_key );
         }
     }
 
