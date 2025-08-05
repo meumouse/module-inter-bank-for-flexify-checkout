@@ -2,7 +2,7 @@
 
 namespace MeuMouse\Flexify_Checkout\Inter_Bank\Core;
 
-use MeuMouse\Flexify_Checkout\Init;
+use MeuMouse\Flexify_Checkout\Admin\Admin_Options;
 use MeuMouse\Flexify_Checkout\Inter_Bank\Traits\Helpers;
 
 // Exit if accessed directly.
