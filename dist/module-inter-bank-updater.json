@@ -9,7 +9,7 @@
 	"tested" : "6.8.1",
 	"requires_php" : "7.4",
 	"added" : "2024-02-22 20:05:00",
-	"last_updated" : "2025-08-05 01:20:00",
+	"last_updated" : "2025-08-05 01:23:00",
 	"homepage" : "https://meumouse.com/plugins/flexify-checkout-para-woocommerce/",
 	"sections" : {
 		"description" : "Extensão que adiciona a forma de pagamento via Pix e Boleto do banco Inter para lojas WooCommerce exclusivo para Flexify Checkout.",
