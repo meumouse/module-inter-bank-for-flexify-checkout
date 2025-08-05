@@ -7,7 +7,7 @@ use MeuMouse\Flexify_Checkout\Inter_Bank;
 use MeuMouse\Flexify_Checkout\Inter_Bank\API\Bank_Slip_API;
 use MeuMouse\Flexify_Checkout\Inter_Bank\API\Webhooks_API;
 use MeuMouse\Flexify_Checkout\Inter_Bank\Bank_Slip\Print_Bank_Slip;
-use MeuMouse\Flexify_Checkout\Init;
+use MeuMouse\Flexify_Checkout\Admin\Admin_Options;
 use WC_Payment_Gateway;
 
 // Exit if accessed directly.
@@ -43,12 +43,12 @@ abstract class Base_Gateway extends WC_Payment_Gateway {
     public function __construct() {
       $this->init_form_fields();
       $this->init_settings();
-      $this->client_id = Init::get_setting('inter_bank_client_id');
-      $this->client_secret = Init::get_setting('inter_bank_client_secret');
+      $this->client_id = Admin_Options::get_setting('inter_bank_client_id');
+      $this->client_secret = Admin_Options::get_setting('inter_bank_client_secret');
       $upload_path = wp_upload_dir()['basedir'] . '/flexify_checkout_integrations/';
       $this->cert_key = $upload_path . get_option('flexify_checkout_inter_bank_key_file');
       $this->cert_crt = $upload_path . get_option('flexify_checkout_inter_bank_crt_file');
-      $this->debug = Init::get_setting('inter_bank_debug_mode') === 'yes';
+      $this->debug = Admin_Options::get_setting('inter_bank_debug_mode') === 'yes';
 
       add_action( 'woocommerce_api_' . $this->id, array( $this, 'handle_webhooks' ), 1000 );
       add_action( 'admin_init', array( $this, 'handle_debug' ), 1000 );

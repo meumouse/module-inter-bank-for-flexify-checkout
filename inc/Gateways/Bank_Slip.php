@@ -7,7 +7,7 @@ use MeuMouse\Flexify_Checkout\Inter_Bank;
 use MeuMouse\Flexify_Checkout\Inter_Bank\API\Bank_Slip_API;
 use MeuMouse\Flexify_Checkout\Inter_Bank\API\Webhooks_API;
 use MeuMouse\Flexify_Checkout\Inter_Bank\Bank_Slip\Print_Bank_Slip;
-use MeuMouse\Flexify_Checkout\Init;
+use MeuMouse\Flexify_Checkout\Admin\Admin_Options;
 
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
@@ -37,11 +37,11 @@ class Bank_Slip extends Base_Gateway {
     $this->endpoint = 'cobranca/v3/cobrancas';
 
     // Define user set variables
-    $this->title = Init::get_setting('bank_slip_gateway_title');
-    $this->description = Init::get_setting('bank_slip_gateway_description');
-    $this->email_instructions = Init::get_setting('bank_slip_gateway_email_instructions');
-    $this->ticket_messages = Init::get_setting('bank_slip_gateway_footer_message');
-    $this->expires_in = Init::get_setting('bank_slip_gateway_expires');
+    $this->title = Admin_Options::get_setting('bank_slip_gateway_title');
+    $this->description = Admin_Options::get_setting('bank_slip_gateway_description');
+    $this->email_instructions = Admin_Options::get_setting('bank_slip_gateway_email_instructions');
+    $this->ticket_messages = Admin_Options::get_setting('bank_slip_gateway_footer_message');
+    $this->expires_in = Admin_Options::get_setting('bank_slip_gateway_expires');
 
     add_action( 'woocommerce_email_before_order_table', array( $this, 'email_instructions' ), 10, 3 );
     add_action( 'woocommerce_my_account_my_orders_actions', array( $this, 'my_account_button' ), 10, 2 );

@@ -12,7 +12,7 @@ $order_date = $order->get_date_created();
 $pix_expires_in = $order->get_meta('inter_pix_expires_in');
 
 // Calcule a hora de expiração do Pix
-$pix_expiration_time = strtotime( $order_date ) + $pix_expires_in;
+$pix_expiration_time = strtotime( $order_date ) + (int) $pix_expires_in;
 
 // Calcule o tempo restante do Pix
 $pix_time_remaining = $pix_expiration_time - time(); ?>

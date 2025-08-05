@@ -4,7 +4,7 @@ namespace MeuMouse\Flexify_Checkout\Inter_Bank\Cron;
 
 use Exception;
 use MeuMouse\Flexify_Checkout\Inter_Bank\Traits\Logger;
-use MeuMouse\Flexify_Checkout\Init;
+use MeuMouse\Flexify_Checkout\Admin\Admin_Options;
 
 defined('ABSPATH') || exit;
 
@@ -40,7 +40,7 @@ class Schedule {
     add_action( 'module_inter_bank_retry', array( $this, 'retry_webhook_query' ), 100, 3);
 
     // Check if Inter bank module is active and if expire date exists
-    if ( ! empty( Init::get_setting('inter_bank_expire_date') ) ) {
+    if ( ! empty( Admin_Options::get_setting('inter_bank_expire_date') ) ) {
       // Hook for scheduling reminders for Inter bank credentials expiration
       add_action( 'wp_loaded', array( $this, 'schedule_remind_inter_bank_credentials' ) );
 
@@ -264,7 +264,7 @@ class Schedule {
    * @return void
    */
   public function schedule_remind_inter_bank_credentials() {
-    $expire_date = Init::get_setting('inter_bank_expire_date');
+    $expire_date = Admin_Options::get_setting('inter_bank_expire_date');
 
     // Get the date format from WordPress settings
     $wp_date_format = get_option('date_format');

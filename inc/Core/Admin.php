@@ -2,8 +2,8 @@
 
 namespace MeuMouse\Flexify_Checkout\Inter_Bank\Core;
 
-use MeuMouse\Flexify_Checkout\Init;
-use MeuMouse\Flexify_Checkout\License;
+use MeuMouse\Flexify_Checkout\Admin\Admin_Options;
+use MeuMouse\Flexify_Checkout\API\License;
 
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
@@ -12,7 +12,7 @@ defined('ABSPATH') || exit;
  * Add plugin settings to Flexify Checkout admin
  * 
  * @since 1.2.0
- * @version 1.2.6
+ * @version 1.3.0
  * @package MeuMouse.com
  */
 class Admin {
@@ -20,28 +20,39 @@ class Admin {
    /**
     * Construct function
     * 
-    * @since 1.2.0
+    * @since 1.3.0
     * @return void
     */
    public function __construct() {
-      // add default options
-      add_filter( 'flexify_checkout_set_default_options', array( $this, 'add_inter_bank_admin_options' ) );
+		// add default options
+		add_filter( 'Flexify_Checkout/Admin/Set_Default_Options', array( $this, 'add_inter_bank_admin_options' ) );
 
-      // add settings panel to Flexify Checkout
-      add_action( 'flexify_checkout_inter_module', array( $this, 'add_admin_settings' ) );
+		// add settings panel to Flexify Checkout
+		add_action( 'flexify_checkout_inter_module', array( $this, 'add_admin_settings' ) );
 
-      // create folder to paste certificates
-      add_action( 'plugins_loaded', array( $this, 'certificates_folder' ), 100 );
+		// create folder to paste certificates
+		add_action( 'plugins_loaded', array( $this, 'certificates_folder' ), 100 );
 
-      // disable inter bank gateways if deactivated
+		// disable inter bank gateways if deactivated
 		add_filter( 'woocommerce_available_payment_gateways', array( $this, 'disable_inter_bank_gateways' ) );
+
+		add_action( 'plugins_loaded', function() {
+			$this->migrate_flexify_option_value(
+				'5.0.0',
+				'inter_bank_env_mode',
+				array(
+					'yes' => 'production',
+					'no' => 'sandbox',
+				)
+			);
+	}, 20 );
    }
 
 
    /**
     * Add options to default on Flexify Checkout
     *
-    * @since 1.2.0
+    * @since 1.3.0
     * @param array $options | Options array
     * @return array
     */
@@ -62,7 +73,7 @@ class Admin {
          'inter_bank_client_id' => '',
          'inter_bank_client_secret' => '',
          'inter_bank_debug_mode' => 'no',
-         'inter_bank_env_mode' => 'yes',
+         'inter_bank_env_mode' => 'production',
          'enable_inter_bank_pix_api' => 'yes',
          'enable_inter_bank_ticket_api' => 'yes',
          'inter_bank_expire_date' => '',
@@ -78,7 +89,7 @@ class Admin {
     * Add Inter bank settings modal on Flexify Checkout integration tab
     * 
     * @since 1.2.0
-    * @version 1.2.6
+    * @version 1.3.0
     * @return void
     */
    public function add_admin_settings() {
@@ -100,20 +111,22 @@ class Admin {
                         </th>
                         <td>
                            <div class="form-check form-switch">
-                              <input type="checkbox" class="toggle-switch" id="inter_bank_debug_mode" name="inter_bank_debug_mode" value="yes" <?php checked( Init::get_setting('inter_bank_debug_mode') === 'yes' ); ?>/>
+                              <input type="checkbox" class="toggle-switch" id="inter_bank_debug_mode" name="inter_bank_debug_mode" value="yes" <?php checked( Admin_Options::get_setting('inter_bank_debug_mode') === 'yes' ); ?>/>
                            </div>
                         </td>
                      </tr>
 
                      <tr>
                         <th>
-                           <?php echo esc_html( 'Sandbox/Produção', 'module-inter-bank-for-flexify-checkout' ); ?>
-                           <span class="flexify-checkout-description"><?php echo esc_html__( 'Ative essa opção para definir a integração como modo Produção (Operacional) ou desativado para Sandbox (Testes).', 'module-inter-bank-for-flexify-checkout' ) ?></span>
+                           <?php echo esc_html( 'Ambiente da API', 'module-inter-bank-for-flexify-checkout' ); ?>
+                           <span class="flexify-checkout-description"><?php echo esc_html__( 'Permite definir a integração como modo Produção (Operacional) ou Sandbox (Testes).', 'module-inter-bank-for-flexify-checkout' ) ?></span>
                         </th>
+
                         <td>
-                           <div class="form-check form-switch">
-                              <input type="checkbox" class="toggle-switch" id="inter_bank_env_mode" name="inter_bank_env_mode" value="yes" <?php checked( Init::get_setting('inter_bank_env_mode') === 'yes' ); ?>/>
-                           </div>
+                           	<select name="inter_bank_env_mode" class="form-select">
+								<option value="production" <?php selected( Admin_Options::get_setting('inter_bank_env_mode'), 'production' ) ?>><?php echo esc_html__( 'Produção (Operacional)', 'module-inter-bank-for-flexify-checkout' ) ?></option>
+								<option value="sandbox" <?php selected( Admin_Options::get_setting('inter_bank_env_mode'), 'sandbox' ) ?>><?php echo esc_html__( 'Sandbox (Testes)', 'module-inter-bank-for-flexify-checkout' ) ?></option>
+							</select>
                         </td>
                      </tr>
 
@@ -123,7 +136,7 @@ class Admin {
                            <span class="flexify-checkout-description"><?php echo esc_html__( 'Chave aleatória ClientID da API do banco Inter.', 'module-inter-bank-for-flexify-checkout' ) ?></span>
                         </th>
                         <td>
-                           <input type="text" class="form-control input-control-wd-20" name="inter_bank_client_id" value="<?php echo Init::get_setting('inter_bank_client_id' ) ?>"/>
+                           <input type="text" class="form-control input-control-wd-20" name="inter_bank_client_id" value="<?php echo Admin_Options::get_setting('inter_bank_client_id' ) ?>"/>
                         </td>
                      </tr>
 
@@ -133,7 +146,7 @@ class Admin {
                            <span class="flexify-checkout-description"><?php echo esc_html__( 'Chave aleatória ClientSecret da API do banco Inter.', 'module-inter-bank-for-flexify-checkout' ) ?></span>
                         </th>
                         <td>
-                           <input type="text" class="form-control input-control-wd-20" name="inter_bank_client_secret" value="<?php echo Init::get_setting('inter_bank_client_secret' ) ?>"/>
+                           <input type="text" class="form-control input-control-wd-20" name="inter_bank_client_secret" value="<?php echo Admin_Options::get_setting('inter_bank_client_secret' ) ?>"/>
                         </td>
                      </tr>
 
@@ -143,7 +156,7 @@ class Admin {
                            <span class="flexify-checkout-description"><?php echo esc_html__( 'Informe a data de quando irá expirar as credenciais da aplicação, assim poderemos te avisar 7 dias antes das credenciais serem revogadas.', 'module-inter-bank-for-flexify-checkout' ) ?></span>
                         </th>
                         <td>
-                           <input type="text" class="form-control input-control-wd-10 dateselect" name="inter_bank_expire_date" value="<?php echo Init::get_setting('inter_bank_expire_date' ) ?>"/>
+                           <input type="text" class="form-control input-control-wd-10 dateselect" name="inter_bank_expire_date" value="<?php echo Admin_Options::get_setting('inter_bank_expire_date' ) ?>"/>
                         </td>
                      </tr>
 
@@ -237,7 +250,7 @@ class Admin {
                         </th>
                         <td class="d-flex align-items-center">
                            <div class="form-check form-switch <?php echo ( ! License::is_valid() ) ? 'require-pro' : ''; ?>">
-                              <input type="checkbox" class="toggle-switch <?php echo ( ! License::is_valid() ) ? 'pro-version' : ''; ?>" id="enable_inter_bank_pix_api" name="enable_inter_bank_pix_api" value="yes" <?php checked( Init::get_setting('enable_inter_bank_pix_api') === 'yes' && class_exists('Module_Inter_Bank') && License::is_valid() ); ?>/>
+                              <input type="checkbox" class="toggle-switch <?php echo ( ! License::is_valid() ) ? 'pro-version' : ''; ?>" id="enable_inter_bank_pix_api" name="enable_inter_bank_pix_api" value="yes" <?php checked( Admin_Options::get_setting('enable_inter_bank_pix_api') === 'yes' && class_exists('Module_Inter_Bank') && License::is_valid() ); ?>/>
                            </div>
                         </td>
                      </tr>
@@ -248,7 +261,7 @@ class Admin {
                            <span class="flexify-checkout-description"><?php echo esc_html__( 'Título que o usuário verá na finalização de compra (Disponível apenas no Brasil).', 'module-inter-bank-for-flexify-checkout' ) ?></span>
                         </th>
                         <td>
-                           <input type="text" class="form-control input-control-wd-20" name="pix_gateway_title" value="<?php echo Init::get_setting('pix_gateway_title' ) ?>"/>
+                           <input type="text" class="form-control input-control-wd-20" name="pix_gateway_title" value="<?php echo Admin_Options::get_setting('pix_gateway_title' ) ?>"/>
                         </td>
                      </tr>
                      
@@ -258,7 +271,7 @@ class Admin {
                            <span class="flexify-checkout-description"><?php echo esc_html__( 'Descrição da forma de pagamento que o usuário verá na finalização de compra.', 'module-inter-bank-for-flexify-checkout' ) ?></span>
                         </th>
                         <td>
-                           <input type="text" class="form-control input-control-wd-20" name="pix_gateway_description" value="<?php echo Init::get_setting('pix_gateway_description' ) ?>"/>
+                           <input type="text" class="form-control input-control-wd-20" name="pix_gateway_description" value="<?php echo Admin_Options::get_setting('pix_gateway_description' ) ?>"/>
                         </td>
                      </tr>
 
@@ -268,7 +281,7 @@ class Admin {
                            <span class="flexify-checkout-description"><?php echo esc_html__( 'Texto exibido no e-mail junto do botão de copiar código Copia e Cola do Pix.', 'module-inter-bank-for-flexify-checkout' ) ?></span>
                         </th>
                         <td>
-                           <input type="text" class="form-control input-control-wd-20" name="pix_gateway_email_instructions" value="<?php echo Init::get_setting('pix_gateway_email_instructions' ) ?>"/>
+                           <input type="text" class="form-control input-control-wd-20" name="pix_gateway_email_instructions" value="<?php echo Admin_Options::get_setting('pix_gateway_email_instructions' ) ?>"/>
                         </td>
                      </tr>
 
@@ -278,7 +291,7 @@ class Admin {
                            <span class="flexify-checkout-description"><?php echo esc_html__( 'Chave Pix associada ao banco Inter que receberá o pagamento. Para chaves do tipo celular ou CNPJ, utilize apenas números.', 'module-inter-bank-for-flexify-checkout' ) ?></span>
                         </th>
                         <td>
-                           <input type="text" class="form-control input-control-wd-20" name="pix_gateway_receipt_key" value="<?php echo Init::get_setting('pix_gateway_receipt_key' ) ?>"/>
+                           <input type="text" class="form-control input-control-wd-20" name="pix_gateway_receipt_key" value="<?php echo Admin_Options::get_setting('pix_gateway_receipt_key' ) ?>"/>
                         </td>
                      </tr>
 
@@ -288,7 +301,7 @@ class Admin {
                            <span class="flexify-checkout-description"><?php echo esc_html__( 'Prazo máximo para pagamento do Pix em minutos.', 'module-inter-bank-for-flexify-checkout' ) ?></span>
                         </th>
                         <td>
-                           <input type="number" class="form-control input-control-wd-5" name="pix_gateway_expires" value="<?php echo Init::get_setting('pix_gateway_expires' ) ?>"/>
+                           <input type="number" class="form-control input-control-wd-5" name="pix_gateway_expires" value="<?php echo Admin_Options::get_setting('pix_gateway_expires' ) ?>"/>
                         </td>
                      </tr>
 
@@ -310,7 +323,7 @@ class Admin {
                         </th>
                         <td class="d-flex align-items-center">
                            <div class="form-check form-switch <?php echo ( ! License::is_valid() ) ? 'require-pro' : ''; ?>">
-                              <input type="checkbox" class="toggle-switch <?php echo ( ! License::is_valid() ) ? 'pro-version' : ''; ?>" id="enable_inter_bank_ticket_api" name="enable_inter_bank_ticket_api" value="yes" <?php checked( Init::get_setting('enable_inter_bank_ticket_api') === 'yes' && class_exists('Module_Inter_Bank') && License::is_valid() ); ?>/>
+                              <input type="checkbox" class="toggle-switch <?php echo ( ! License::is_valid() ) ? 'pro-version' : ''; ?>" id="enable_inter_bank_ticket_api" name="enable_inter_bank_ticket_api" value="yes" <?php checked( Admin_Options::get_setting('enable_inter_bank_ticket_api') === 'yes' && class_exists('Module_Inter_Bank') && License::is_valid() ); ?>/>
                            </div>
                         </td>
                      </tr>
@@ -321,7 +334,7 @@ class Admin {
                            <span class="flexify-checkout-description"><?php echo esc_html__( 'Título que o usuário verá na finalização de compra.', 'module-inter-bank-for-flexify-checkout' ) ?></span>
                         </th>
                         <td>
-                           <input type="text" class="form-control input-control-wd-20" name="bank_slip_gateway_title" value="<?php echo Init::get_setting('bank_slip_gateway_title' ) ?>"/>
+                           <input type="text" class="form-control input-control-wd-20" name="bank_slip_gateway_title" value="<?php echo Admin_Options::get_setting('bank_slip_gateway_title' ) ?>"/>
                         </td>
                      </tr>
 
@@ -331,7 +344,7 @@ class Admin {
                            <span class="flexify-checkout-description"><?php echo esc_html__( 'Descrição da forma de pagamento que o usuário verá na finalização de compra.', 'module-inter-bank-for-flexify-checkout' ) ?></span>
                         </th>
                         <td>
-                           <input type="text" class="form-control input-control-wd-20" name="bank_slip_gateway_description" value="<?php echo Init::get_setting('bank_slip_gateway_description' ) ?>"/>
+                           <input type="text" class="form-control input-control-wd-20" name="bank_slip_gateway_description" value="<?php echo Admin_Options::get_setting('bank_slip_gateway_description' ) ?>"/>
                         </td>
                      </tr>
 
@@ -341,7 +354,7 @@ class Admin {
                            <span class="flexify-checkout-description"><?php echo esc_html__( 'Texto exibido no e-mail junto do botão de copiar código Copia e Cola do Pix.', 'module-inter-bank-for-flexify-checkout' ) ?></span>
                         </th>
                         <td>
-                           <input type="text" class="form-control input-control-wd-20" name="bank_slip_gateway_email_instructions" value="<?php echo Init::get_setting('bank_slip_gateway_email_instructions' ) ?>"/>
+                           <input type="text" class="form-control input-control-wd-20" name="bank_slip_gateway_email_instructions" value="<?php echo Admin_Options::get_setting('bank_slip_gateway_email_instructions' ) ?>"/>
                         </td>
                      </tr>
 
@@ -351,7 +364,7 @@ class Admin {
                            <span class="flexify-checkout-description"><?php echo esc_html__( 'Mensagem do rodapé do boleto bancário. Use a variável {order_id} para inserir o número do pedido.', 'module-inter-bank-for-flexify-checkout' ) ?></span>
                         </th>
                         <td>
-                           <input type="text" class="form-control input-control-wd-20" name="bank_slip_gateway_footer_message" value="<?php echo Init::get_setting('bank_slip_gateway_footer_message' ) ?>"/>
+                           <input type="text" class="form-control input-control-wd-20" name="bank_slip_gateway_footer_message" value="<?php echo Admin_Options::get_setting('bank_slip_gateway_footer_message' ) ?>"/>
                         </td>
                      </tr>
                      
@@ -361,7 +374,7 @@ class Admin {
                            <span class="flexify-checkout-description"><?php echo esc_html__( 'Prazo máximo para pagamento do boleto em dias.', 'module-inter-bank-for-flexify-checkout' ) ?></span>
                         </th>
                         <td>
-                           <input type="number" class="form-control input-control-wd-5" name="bank_slip_gateway_expires" value="<?php echo Init::get_setting('bank_slip_gateway_expires' ) ?>"/>
+                           <input type="number" class="form-control input-control-wd-5" name="bank_slip_gateway_expires" value="<?php echo Admin_Options::get_setting('bank_slip_gateway_expires' ) ?>"/>
                         </td>
                      </tr>
                   </tbody>
@@ -404,14 +417,48 @@ class Admin {
 	 * @return array
 	 */
 	public function disable_inter_bank_gateways( $available_gateways ) {
-		if ( Init::get_setting('enable_inter_bank_pix_api') !== 'yes' && isset( $available_gateways['interpix'] ) ) {
+		if ( Admin_Options::get_setting('enable_inter_bank_pix_api') !== 'yes' && isset( $available_gateways['interpix'] ) ) {
 			unset( $available_gateways['interpix'] );
 		}
 
-		if ( Init::get_setting('enable_inter_bank_ticket_api') !== 'yes' && isset( $available_gateways['interboleto'] ) ) {
+		if ( Admin_Options::get_setting('enable_inter_bank_ticket_api') !== 'yes' && isset( $available_gateways['interboleto'] ) ) {
 			unset( $available_gateways['interboleto'] );
 		}
 
 		return $available_gateways;
 	}
+
+
+	/**
+	 * Migrate specific setting inside Flexify Checkout settings
+	 *
+	 * @since 1.3.0
+	 * @param string $version | Minimum version to check for migration
+	 * @param string $key | Option key to check and migrate.
+	 * @param array  $map | Mapping array to convert old values to new values
+	 * @return void
+	 */
+	public function migrate_flexify_option_value( $version, $key, $map ) {
+		if ( ! defined('FLEXIFY_CHECKOUT_VERSION') || version_compare( FLEXIFY_CHECKOUT_VERSION, $version, '<' ) ) {
+			return;
+		}
+
+		if ( ! function_exists('get_plugin_data') ) {
+			require_once ABSPATH . 'wp-admin/includes/plugin.php';
+		}
+
+		$options = get_option( 'flexify_checkout_settings', array() );
+
+		if ( ! isset( $options[ $key ] ) ) {
+			return;
+		}
+
+		$current_value = $options[ $key ];
+
+		if ( isset( $map[ $current_value ] ) ) {
+			$options[ $key ] = $map[ $current_value ];
+			update_option( 'flexify_checkout_settings', $options );
+		}
+	}
+
 }

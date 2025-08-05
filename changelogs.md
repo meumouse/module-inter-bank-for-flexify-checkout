@@ -1,3 +1,7 @@
+Versão 1.3.0 (05/08/2025)
+* Correção de bugs
+* Compatibilidade com Flexify Checkout v5.0.0
+
 Versão 1.2.7 (02/09/2024)
 * Correção de bugs
 

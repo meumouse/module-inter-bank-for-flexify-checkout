@@ -5,7 +5,7 @@ namespace MeuMouse\Flexify_Checkout\Inter_Bank\Gateways;
 use Exception;
 use MeuMouse\Flexify_Checkout\Inter_Bank;
 use MeuMouse\Flexify_Checkout\Inter_Bank\API\Pix_API;
-use MeuMouse\Flexify_Checkout\Init;
+use MeuMouse\Flexify_Checkout\Admin\Admin_Options;
 use chillerlan\QRCode\QRCode;
 
 // Exit if accessed directly.
@@ -49,11 +49,11 @@ class Pix extends Base_Gateway {
     $this->endpoint = 'pix/v2';
 
     // Define user set variables
-    $this->title = Init::get_setting('pix_gateway_title');
-    $this->description = Init::get_setting('pix_gateway_description');
-    $this->email_instructions = Init::get_setting('pix_gateway_email_instructions');
-    $this->expires_in = Init::get_setting('pix_gateway_expires');
-    $this->pix_key = Init::get_setting('pix_gateway_receipt_key');
+    $this->title = Admin_Options::get_setting('pix_gateway_title');
+    $this->description = Admin_Options::get_setting('pix_gateway_description');
+    $this->email_instructions = Admin_Options::get_setting('pix_gateway_email_instructions');
+    $this->expires_in = Admin_Options::get_setting('pix_gateway_expires');
+    $this->pix_key = Admin_Options::get_setting('pix_gateway_receipt_key');
 
     add_action( 'woocommerce_email_before_order_table', array( $this, 'email_instructions' ), 10, 3 );
     add_action( 'woocommerce_my_account_my_orders_actions', array( $this, 'my_account_button' ), 10, 2 );
