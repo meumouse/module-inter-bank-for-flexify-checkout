@@ -443,10 +443,6 @@ class Admin {
 			return;
 		}
 
-		if ( ! function_exists('get_plugin_data') ) {
-			require_once ABSPATH . 'wp-admin/includes/plugin.php';
-		}
-
 		$options = get_option( 'flexify_checkout_settings', array() );
 
 		if ( ! isset( $options[ $key ] ) ) {
