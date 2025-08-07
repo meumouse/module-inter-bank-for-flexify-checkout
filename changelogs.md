@@ -1,3 +1,6 @@
+Versão 1.3.1 (07/08/2025)
+* Recurso adicionado: Prevenção contra quebra do site por dependência desatualizada
+
 Versão 1.3.0 (05/08/2025)
 * Correção de bugs
 * Compatibilidade com Flexify Checkout v5.0.0

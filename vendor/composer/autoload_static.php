@@ -43,6 +43,7 @@ class ComposerStaticInita377af024d8ded3a2a4f8ce70f216865
         'MeuMouse\\Flexify_Checkout\\Inter_Bank\\Core\\Admin' => __DIR__ . '/../..' . '/inc/Core/Admin.php',
         'MeuMouse\\Flexify_Checkout\\Inter_Bank\\Core\\Ajax' => __DIR__ . '/../..' . '/inc/Core/Ajax.php',
         'MeuMouse\\Flexify_Checkout\\Inter_Bank\\Core\\Assets' => __DIR__ . '/../..' . '/inc/Core/Assets.php',
+        'MeuMouse\\Flexify_Checkout\\Inter_Bank\\Core\\Init' => __DIR__ . '/../..' . '/inc/Core/Init.php',
         'MeuMouse\\Flexify_Checkout\\Inter_Bank\\Core\\Updater' => __DIR__ . '/../..' . '/inc/Core/Updater.php',
         'MeuMouse\\Flexify_Checkout\\Inter_Bank\\Cron\\Schedule' => __DIR__ . '/../..' . '/inc/Cron/Schedule.php',
         'MeuMouse\\Flexify_Checkout\\Inter_Bank\\Gateways\\Bank_Slip' => __DIR__ . '/../..' . '/inc/Gateways/Bank_Slip.php',

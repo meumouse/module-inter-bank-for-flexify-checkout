@@ -15,6 +15,7 @@ return array(
     'MeuMouse\\Flexify_Checkout\\Inter_Bank\\Core\\Admin' => $baseDir . '/inc/Core/Admin.php',
     'MeuMouse\\Flexify_Checkout\\Inter_Bank\\Core\\Ajax' => $baseDir . '/inc/Core/Ajax.php',
     'MeuMouse\\Flexify_Checkout\\Inter_Bank\\Core\\Assets' => $baseDir . '/inc/Core/Assets.php',
+    'MeuMouse\\Flexify_Checkout\\Inter_Bank\\Core\\Init' => $baseDir . '/inc/Core/Init.php',
     'MeuMouse\\Flexify_Checkout\\Inter_Bank\\Core\\Updater' => $baseDir . '/inc/Core/Updater.php',
     'MeuMouse\\Flexify_Checkout\\Inter_Bank\\Cron\\Schedule' => $baseDir . '/inc/Cron/Schedule.php',
     'MeuMouse\\Flexify_Checkout\\Inter_Bank\\Gateways\\Bank_Slip' => $baseDir . '/inc/Gateways/Bank_Slip.php',
