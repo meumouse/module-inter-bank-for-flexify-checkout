@@ -70,7 +70,7 @@ class Module_Inter_Bank {
 	 */
 	public function __construct() {
 		add_action( 'before_woocommerce_init', array( $this, 'setup_hpos_compatibility' ) );
-		add_action( 'Flexify_Checkout/Init', array( $this, 'init' ), 99 );
+		add_action( 'wp_loaded', array( $this, 'init' ), 99 );
 	}
 
 
@@ -99,6 +99,7 @@ class Module_Inter_Bank {
 
 		// check if Flexify Checkout version is compatible
 		if ( defined('FLEXIFY_CHECKOUT_VERSION') && version_compare( FLEXIFY_CHECKOUT_VERSION, '5.0.0', '<' ) ) {
+			error_log('Teste');
 			add_action( 'admin_notices', array( $this, 'flexify_checkout_version_notice' ) );
 			deactivate_plugins( FD_MODULE_INTER_BASENAME );
 			return;
