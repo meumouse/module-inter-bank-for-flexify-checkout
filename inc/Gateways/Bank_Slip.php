@@ -14,6 +14,14 @@ defined('ABSPATH') || exit;
 
 class Bank_Slip extends Base_Gateway {
 
+  /**
+   * Gateway ID
+   * 
+   * @since 1.0.0
+   * @version 1.3.2
+   */
+  public $id = 'interboleto';
+
   public $ticket_messages;
   public $expires_in;
 
@@ -21,15 +29,13 @@ class Bank_Slip extends Base_Gateway {
    * Constructor for the gateway
    * 
    * @since 1.0.0
-   * @version 1.1.0
+   * @version 1.3.2
    * @return void
    */
   public function __construct() {
     // Load the settings.
     parent::__construct();
 
-    // compatibility with migration from another plugin
-    $this->id = 'interboleto';
     $this->icon = apply_filters( 'inter_bank_ticket_icon', FD_MODULE_INTER_ASSETS . 'img/bank-slip.svg' );
     $this->has_fields = false;
     $this->method_title = __( 'Boleto Banco Inter', 'module-inter-bank-for-flexify-checkout' );
