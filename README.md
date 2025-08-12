@@ -28,6 +28,18 @@ Você pode instalar um plugin WordPress de duas maneiras: via o painel de admini
 
 ### Registro de alterações (Changelogs):
 
+Versão 1.3.2 (12/08/2025)
+* Correção de bugs
+    - Reconstrução da lista de gateways para evitar cache antecipado pelo Mercado Pago
+* Otimizações
+
+Versão 1.3.1 (07/08/2025)
+* Recurso adicionado: Prevenção contra quebra do site por dependência desatualizada
+
+Versão 1.3.0 (05/08/2025)
+* Correção de bugs
+* Compatibilidade com Flexify Checkout v5.0.0
+
 Versão 1.2.7 (02/09/2024)
 * Correção de bugs
 
