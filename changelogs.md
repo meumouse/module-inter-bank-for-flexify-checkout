@@ -1,3 +1,8 @@
+Versão 1.3.2 (12/08/2025)
+* Correção de bugs
+    - Reconstrução da lista de gateways para evitar cache antecipado pelo Mercado Pago
+* Otimizações
+
 Versão 1.3.1 (07/08/2025)
 * Recurso adicionado: Prevenção contra quebra do site por dependência desatualizada
 

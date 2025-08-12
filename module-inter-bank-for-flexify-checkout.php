@@ -7,7 +7,7 @@
  * Requires Plugins: 		flexify-checkout-for-woocommerce
  * Author: 				    MeuMouse.com
  * Author URI: 			    https://meumouse.com/
- * Version: 			    1.3.1
+ * Version: 			    1.3.2
  * WC requires at least:    6.0.0
  * WC tested up to: 		10.0.4
  * Requires PHP: 			7.4
@@ -16,6 +16,8 @@
  * Domain Path: 			/languages
  * License: 				GPL2
  */
+
+use Automattic\WooCommerce\Utilities\FeaturesUtil;
 
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
@@ -43,7 +45,7 @@ class Module_Inter_Bank {
 	 * @since 1.0.0
 	 * @var string
 	 */
-	public static $version = '1.3.1';
+	public static $version = '1.3.2';
 
   	/**
 	 * Plugin initiated
@@ -78,7 +80,7 @@ class Module_Inter_Bank {
 	 * Check dependencies before activate plugin
 	 * 
 	 * @since 1.0.0
-	 * @version 1.3.1
+	 * @version 1.3.2
 	 * @return void
 	 */
 	public function init() {
@@ -87,10 +89,8 @@ class Module_Inter_Bank {
             include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
         }
 
-		$flexify_main = 'flexify-checkout-for-woocommerce/flexify-checkout-for-woocommerce.php';
-
 		// check if Flexify Checkout is active
-		if ( ! is_plugin_active( $flexify_main ) ) {
+		if ( ! is_plugin_active('flexify-checkout-for-woocommerce/flexify-checkout-for-woocommerce.php') ) {
 			add_action( 'admin_notices', array( $this, 'flexify_checkout_require_notice' ) );
 			return;
 		}
@@ -99,7 +99,6 @@ class Module_Inter_Bank {
 
 		// check if Flexify Checkout version is compatible
 		if ( defined('FLEXIFY_CHECKOUT_VERSION') && version_compare( FLEXIFY_CHECKOUT_VERSION, '5.0.0', '<' ) ) {
-			error_log('Teste');
 			add_action( 'admin_notices', array( $this, 'flexify_checkout_version_notice' ) );
 			deactivate_plugins( FD_MODULE_INTER_BASENAME );
 			return;
@@ -191,16 +190,17 @@ class Module_Inter_Bank {
 
 
 	/**
-	 * Setp compatibility with HPOS/Custom order table feature of WooCommerce.
+	 * Setup compatibility with HPOS table feature of WooCommerce
 	 *
 	 * @since 1.0.0
-	 * @version 1.3.0
+	 * @version 1.3.2
 	 * @return void
 	 */
 	public static function setup_hpos_compatibility() {
 		if ( defined('WC_VERSION') && version_compare( WC_VERSION, '7.1', '>' ) ) {
-			if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
-				\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
+			if ( class_exists( FeaturesUtil::class ) ) {
+				FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
+				FeaturesUtil::declare_compatibility( 'cart_checkout_blocks', __FILE__, true );
 			}
 		}
 	}

@@ -44,12 +44,12 @@ abstract class API_Base {
 	 * Construct function
 	 *
 	 * @since 1.0.0
-	 * @version 1.3.0
+	 * @version 1.3.2
 	 * @param WC_Payment_Gateway $gateway Gateway instance.
 	 */
 	public function __construct( $gateway = null ) {
 		$this->gateway = $gateway;
-		$this->api_url = Admin_Options::get_setting('inter_bank_env_mode') === 'production' ? 'https://cdpj.partners.bancointer.com.br/' : 'https://cdpj-sandbox.partners.uatinter.co/';
+		$this->api_url = Admin_Options::get_setting('inter_bank_env_mode') === 'sandbox' ? 'https://cdpj-sandbox.partners.uatinter.co/' : 'https://cdpj.partners.bancointer.com.br/';
 
 		if ( $this->gateway ) {
 			$critical_only = ! $this->gateway->debug;
