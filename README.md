@@ -28,6 +28,10 @@ Você pode instalar um plugin WordPress de duas maneiras: via o painel de admini
 
 ### Registro de alterações (Changelogs):
 
+Versão 1.3.3 (31/08/2025)
+* Correção de bugs
+    - Duplicidade de informações do Pix na página de agradecimento
+
 Versão 1.3.2 (12/08/2025)
 * Correção de bugs
     - Reconstrução da lista de gateways para evitar cache antecipado pelo Mercado Pago
