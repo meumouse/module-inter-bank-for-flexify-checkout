@@ -15,7 +15,7 @@ defined('ABSPATH') || exit;
  * Class for extends main class Base_Gateway for add payment gateway Pix on WooCommerce
  * 
  * @since 1.0.0
- * @version 1.2.0
+ * @version 1.3.3
  * @package MeuMouse.com
  */
 class Pix extends Base_Gateway {
@@ -34,7 +34,7 @@ class Pix extends Base_Gateway {
 	 * Constructor for the gateway
 	 * 
 	 * @since 1.0.0
-	 * @version 1.1.0
+	 * @version 1.3.3
 	 * @return void
 	 */
 	public function __construct() {
@@ -59,12 +59,7 @@ class Pix extends Base_Gateway {
 		add_action( 'woocommerce_my_account_my_orders_actions', array( $this, 'my_account_button' ), 10, 2 );
 		add_action( 'woocommerce_order_details_after_customer_details', array( $this, 'my_account_order_details' ) );
 		add_action( 'woocommerce_receipt_' . $this->id, array( $this, 'thankyou_page' ), 1000 );
-		add_action( 'woocommerce_thankyou', array( $this, 'thankyou_page' ), 1000 );
-
-		// NextMove Lite - Thank You Page for WooCommerce
-		if ( class_exists('\XLWCTY_Core') ) {
-			add_action( 'woocommerce_thankyou_' . $this->id, array( $this, 'thankyou_page' ), 1000 );
-		}
+		add_action( 'woocommerce_thankyou_' . $this->id, array( $this, 'thankyou_page' ), 1000 );
 
 		add_filter( 'woocommerce_order_needs_payment', array( $this, 'allow_order_needs_payment' ), 100, 2 );
 
