@@ -136,6 +136,8 @@ abstract class API_Base {
 	/**
 	 * Process API requests
 	 *
+	 * @since 1.0.0
+	 * @version 1.4.0
 	 * @param string $endpoint | Partial endpoint for API
 	 * @param string $method | Request method
 	 * @param array $data | Request data
@@ -174,7 +176,12 @@ abstract class API_Base {
 			$url = add_query_arg( $data, $url );
 		}
 
-		$response = wp_safe_remote_post( $url, $params );
+		if ( 'GET' === strtoupper( $method ) ) {
+			unset( $params['method'] );
+			$response = wp_safe_remote_get( $url, $params );
+		} else {
+			$response = wp_safe_remote_request( $url, $params );
+		}
 
 		if ( is_wp_error( $response ) ) {
 			$this->log('WP Error on enpoint ' . $endpoint . ': ' . print_r($response, true), 'emergency');
