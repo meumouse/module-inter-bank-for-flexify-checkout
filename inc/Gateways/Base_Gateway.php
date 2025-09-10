@@ -41,18 +41,18 @@ abstract class Base_Gateway extends WC_Payment_Gateway {
      * @return void
      */
     public function __construct() {
-      $this->init_form_fields();
-      $this->init_settings();
-      $this->client_id = Admin_Options::get_setting('inter_bank_client_id');
-      $this->client_secret = Admin_Options::get_setting('inter_bank_client_secret');
-      $upload_path = wp_upload_dir()['basedir'] . '/flexify_checkout_integrations/';
-      $this->cert_key = $upload_path . get_option('flexify_checkout_inter_bank_key_file');
-      $this->cert_crt = $upload_path . get_option('flexify_checkout_inter_bank_crt_file');
-      $this->debug = Admin_Options::get_setting('inter_bank_debug_mode') === 'yes';
+		$this->init_form_fields();
+		$this->init_settings();
+		$this->client_id = Admin_Options::get_setting('inter_bank_client_id');
+		$this->client_secret = Admin_Options::get_setting('inter_bank_client_secret');
+		$upload_path = wp_upload_dir()['basedir'] . '/flexify_checkout_integrations/';
+		$this->cert_key = $upload_path . get_option('flexify_checkout_inter_bank_key_file');
+		$this->cert_crt = $upload_path . get_option('flexify_checkout_inter_bank_crt_file');
+		$this->debug = Admin_Options::get_setting('inter_bank_debug_mode') === 'yes';
 
-      add_action( 'woocommerce_api_' . $this->id, array( $this, 'handle_webhooks' ), 1000 );
-      add_action( 'admin_init', array( $this, 'handle_debug' ), 1000 );
-      add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
+		add_action( 'woocommerce_api_' . $this->id, array( $this, 'handle_webhooks' ), 1000 );
+		add_action( 'admin_init', array( $this, 'handle_debug' ), 1000 );
+		add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
     }
 
 
@@ -71,7 +71,7 @@ abstract class Base_Gateway extends WC_Payment_Gateway {
      * @return void
      */
     public function init_form_fields() {
-      $this->form_fields = array_merge( $this->gateway_fields(), $this->shared_fields() );
+      	$this->form_fields = array_merge( $this->gateway_fields(), $this->shared_fields() );
     }
 
 
@@ -82,19 +82,19 @@ abstract class Base_Gateway extends WC_Payment_Gateway {
      * @return array
      */
     public function shared_fields() {
-      return array(
-        'advanced_section' => array(
-          'title' => __( 'Avançado', 'wc-banco-inter' ),
-          'type' => 'title',
-          'desc_tip' => false,
-        ),
-        'webhooks' => array(
-          'title' => __( 'Webhooks', 'wc-banco-inter' ),
-          'type' => 'webhooks',
-          'description' => __( 'O webhook é necessário para dar baixa automática nos pedidos pagos.', 'wc-banco-inter' ),
-          'desc_tip' => false,
-        ),
-      );
+		return array(
+			'advanced_section' => array(
+				'title' => __( 'Avançado', 'wc-banco-inter' ),
+				'type' => 'title',
+				'desc_tip' => false,
+			),
+			'webhooks' => array(
+				'title' => __( 'Webhooks', 'wc-banco-inter' ),
+				'type' => 'webhooks',
+				'description' => __( 'O webhook é necessário para dar baixa automática nos pedidos pagos.', 'wc-banco-inter' ),
+				'desc_tip' => false,
+			),
+		);
     }
 
 
@@ -105,15 +105,15 @@ abstract class Base_Gateway extends WC_Payment_Gateway {
      * @return bool
      */
     public function is_available() {
-      if ( 'BRL' !== get_woocommerce_currency() ) {
-        return false;
-      }
+		if ( 'BRL' !== get_woocommerce_currency() ) {
+			return false;
+		}
 
-      if ( empty( $this->client_id ) || empty( $this->client_secret ) || empty( $this->cert_key ) || empty( $this->cert_crt ) ) {
-        return false;
-      }
+		if ( empty( $this->client_id ) || empty( $this->client_secret ) || empty( $this->cert_key ) || empty( $this->cert_crt ) ) {
+			return false;
+		}
 
-      return parent::is_available();
+		return parent::is_available();
     }
 
 
@@ -126,96 +126,96 @@ abstract class Base_Gateway extends WC_Payment_Gateway {
      * @return string
      */
     public function generate_webhooks_html( $key, $data ) {
-      $field_key = $this->get_field_key( $key );
-      $defaults  = array(
-        'title' => '',
-        'disabled' => false,
-        'class' => '',
-        'css' => '',
-        'placeholder' => '',
-        'type' => 'text',
-        'desc_tip' => false,
-        'description' => '',
-        'custom_attributes' => array(),
-      );
+		$field_key = $this->get_field_key( $key );
+		$defaults  = array(
+			'title' => '',
+			'disabled' => false,
+			'class' => '',
+			'css' => '',
+			'placeholder' => '',
+			'type' => 'text',
+			'desc_tip' => false,
+			'description' => '',
+			'custom_attributes' => array(),
+		);
 
-      $data = wp_parse_args( $data, $defaults );
+		$data = wp_parse_args( $data, $defaults );
 
-      ob_start(); ?>
+		ob_start(); ?>
 
-      <tr valign="top">
-        <th scope="row" class="titledesc">
-          <label><?php echo wp_kses_post( $data['title'] ); ?> <?php echo $this->get_tooltip_html( $data ); // WPCS: XSS ok. ?></label>
-        </th>
-        
-        <td class="forminp">
-          <?php
-            if ( ! isset( $_GET['section'] ) || $this->id !== $_GET['section'] ) {
-              // not the current section! Avoid external calls
-            } elseif ( empty( $this->expires_in ) || empty( $this->client_id ) || empty( $this->client_secret ) || empty( $this->cert_key ) || empty( $this->cert_crt ) ) {
-              echo '<p>' . __( 'Configure os dados da integração para visualizar as configurações de webhooks.', 'module-inter-bank-for-flexify-checkout' ) . '</p>';
-            } else {
-              try {
-                // always request a new token
-                delete_transient( 'module_inter_bank_token_' . $this->id );
+		<tr valign="top">
+			<th scope="row" class="titledesc">
+			<label><?php echo wp_kses_post( $data['title'] ); ?> <?php echo $this->get_tooltip_html( $data ); // WPCS: XSS ok. ?></label>
+			</th>
+			
+			<td class="forminp">
+			<?php
+				if ( ! isset( $_GET['section'] ) || $this->id !== $_GET['section'] ) {
+				// not the current section! Avoid external calls
+				} elseif ( empty( $this->expires_in ) || empty( $this->client_id ) || empty( $this->client_secret ) || empty( $this->cert_key ) || empty( $this->cert_crt ) ) {
+				echo '<p>' . __( 'Configure os dados da integração para visualizar as configurações de webhooks.', 'module-inter-bank-for-flexify-checkout' ) . '</p>';
+				} else {
+				try {
+					// always request a new token
+					delete_transient( 'module_inter_bank_token_' . $this->id );
 
-                if ( ! file_exists( $this->cert_key ) || ! file_exists( $this->cert_crt ) ) {
-                  throw new \Exception( __( 'Certificados não encontrados. O caminho informado é inválido.', 'module-inter-bank-for-flexify-checkout' ) );
-                  update_option('flexify_checkout_inter_bank_webhook', 'disabled');
-                }
+					if ( ! file_exists( $this->cert_key ) || ! file_exists( $this->cert_crt ) ) {
+					throw new \Exception( __( 'Certificados não encontrados. O caminho informado é inválido.', 'module-inter-bank-for-flexify-checkout' ) );
+					update_option('flexify_checkout_inter_bank_webhook', 'disabled');
+					}
 
-                if ( defined('BANCO_INTER_DISABLE_WEBHOOKS') && BANCO_INTER_DISABLE_WEBHOOKS ) {
-                  throw new \Exception( __( 'A Configuração dos Webhooks foram desativadas no wp-config.php', 'module-inter-bank-for-flexify-checkout' ) );
-                  update_option('flexify_checkout_inter_bank_webhook', 'disabled');
-                }
+					if ( defined('BANCO_INTER_DISABLE_WEBHOOKS') && BANCO_INTER_DISABLE_WEBHOOKS ) {
+					throw new \Exception( __( 'A Configuração dos Webhooks foram desativadas no wp-config.php', 'module-inter-bank-for-flexify-checkout' ) );
+					update_option('flexify_checkout_inter_bank_webhook', 'disabled');
+					}
 
-                $api = new Webhooks_API( $this );
-                $webhook = $api->get();
+					$api = new Webhooks_API( $this );
+					$webhook = $api->get();
 
-                if ( isset( $_GET['debug'] ) ) {
-                  print_r($webhook);
-                }
+					if ( isset( $_GET['debug'] ) ) {
+					print_r($webhook);
+					}
 
-                $webhook_url = WC()->api_request_url( $this->id );
+					$webhook_url = WC()->api_request_url( $this->id );
 
-                if ( defined('BANCOINTER_CUSTOM_WEBHOOK_URL') ) {
-                  $urls = BANCOINTER_CUSTOM_WEBHOOK_URL;
-                  $webhook_url = $urls[$this->id];
-                }
+					if ( defined('BANCOINTER_CUSTOM_WEBHOOK_URL') ) {
+					$urls = BANCOINTER_CUSTOM_WEBHOOK_URL;
+					$webhook_url = $urls[$this->id];
+					}
 
-                $message = __( 'Webhook ativo para consultas.', 'module-inter-bank-for-flexify-checkout' );
-                $should_update = isset( $_GET['force_webhook_update'] ) ? true : false;
+					$message = __( 'Webhook ativo para consultas.', 'module-inter-bank-for-flexify-checkout' );
+					$should_update = isset( $_GET['force_webhook_update'] ) ? true : false;
 
-                if ( ! $webhook ) {
-                  $should_update = true;
-                  $message = __( 'Webhook criado com sucesso!', 'module-inter-bank-for-flexify-checkout' );
+					if ( ! $webhook ) {
+					$should_update = true;
+					$message = __( 'Webhook criado com sucesso!', 'module-inter-bank-for-flexify-checkout' );
 
-                } elseif ( $webhook['webhookUrl'] !== $webhook_url ) {
-                  $should_update = true;
+					} elseif ( $webhook['webhookUrl'] !== $webhook_url ) {
+					$should_update = true;
 
-                  $message = sprintf( __( 'A URL do webhook foi atualizada. URL anterior: %s', 'module-inter-bank-for-flexify-checkout' ), $webhook['webhookUrl'] );
-                }
+					$message = sprintf( __( 'A URL do webhook foi atualizada. URL anterior: %s', 'module-inter-bank-for-flexify-checkout' ), $webhook['webhookUrl'] );
+					}
 
-                if ( $should_update ) {
-                  $api->create( $webhook_url );
-                  update_option('flexify_checkout_inter_bank_webhook', 'enabled');
-                }
+					if ( $should_update ) {
+					$api->create( $webhook_url );
+					update_option('flexify_checkout_inter_bank_webhook', 'enabled');
+					}
 
-                echo '<p style="font-weight: bold; color: #29921a">' . $message . '</p>';
-                echo '<a href="' . admin_url( '?check_inter_bank_payments' ) . '">'. __( 'Verificar pedidos pendentes', 'module-inter-bank-for-flexify-checkout' ) .'</a>';
+					echo '<p style="font-weight: bold; color: #29921a">' . $message . '</p>';
+					echo '<a href="' . admin_url( '?check_inter_bank_payments' ) . '">'. __( 'Verificar pedidos pendentes', 'module-inter-bank-for-flexify-checkout' ) .'</a>';
 
-              } catch ( \Exception $e ) {
-                echo '<p style="font-weight: bold; color: #f00">' . sprintf( __( 'Ocorreu um erro ao listar os webhooks: %s', 'module-inter-bank-for-flexify-checkout' ), $e->getMessage() ) . '</p>';
-              }
-            }
-          ?>
-          
-          <?php echo $this->get_description_html( $data ); // WPCS: XSS ok. ?>
-        </td>
-      </tr>
-      <?php
+				} catch ( \Exception $e ) {
+					echo '<p style="font-weight: bold; color: #f00">' . sprintf( __( 'Ocorreu um erro ao listar os webhooks: %s', 'module-inter-bank-for-flexify-checkout' ), $e->getMessage() ) . '</p>';
+				}
+				}
+			?>
+			
+			<?php echo $this->get_description_html( $data ); // WPCS: XSS ok. ?>
+			</td>
+		</tr>
+		<?php
 
-      return ob_get_clean();
+		return ob_get_clean();
     }
 
 
@@ -226,12 +226,12 @@ abstract class Base_Gateway extends WC_Payment_Gateway {
      * @return void
      */
     public function handle_debug() {
-      if ( isset( $_GET['check_inter_bank_payments'] ) && current_user_can( 'manage_woocommerce' ) ) {
-        do_action( 'module_inter_bank_check_interboletov2' );
-        do_action( 'module_inter_bank_check_interpix' );
+		if ( isset( $_GET['check_inter_bank_payments'] ) && current_user_can( 'manage_woocommerce' ) ) {
+			do_action( 'module_inter_bank_check_interboletov2' );
+			do_action( 'module_inter_bank_check_interpix' );
 
-        wp_die( __( 'Você já pode fechar essa página. A consulta será feita em segundo plano.', 'module-inter-bank-for-flexify-checkout' ) );
-      }
+			wp_die( __( 'Você já pode fechar essa página. A consulta será feita em segundo plano.', 'module-inter-bank-for-flexify-checkout' ) );
+		}
     }
 
     public abstract function handle_webhooks();

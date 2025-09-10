@@ -64,7 +64,7 @@ class Init {
 	 * Add the gateway to WooCommerce
 	 *
 	 * @since 1.0.0
-	 * @version 1.3.2
+	 * @version 1.4.0
 	 * @param array $methods | WooCommerce payment methods
 	 * @return array Payment methods with Banco Inter Methods.
 	 */
@@ -76,6 +76,7 @@ class Init {
 		$add = array(
 			\MeuMouse\Flexify_Checkout\Inter_Bank\Gateways\Bank_Slip::class,
 			\MeuMouse\Flexify_Checkout\Inter_Bank\Gateways\Pix::class,
+			\MeuMouse\Flexify_Checkout\Inter_Bank\Gateways\Pix_Automatico::class,
 		);
 
 		foreach ( $add as $class ) {
