@@ -9,15 +9,24 @@ use MeuMouse\Flexify_Checkout\Admin\Admin_Options;
 
 defined('ABSPATH') || exit;
 
+/**
+ * Abstract API main class for reuse
+ * 
+ * @since 1.0.0
+ * @version 1.4.0
+ * @package MeuMouse.com
+ */
 abstract class API_Base {
 	use Helpers, Logger;
 
 	/**
 	 * API token scopes
 	 *
+	 * @since 1.0.0
+	 * @version 1.4.0
 	 * @var string
 	 */
-	protected $token_scope = 'webhook.write webhook.read cob.write cob.read boleto-cobranca.read boleto-cobranca.write';
+	protected $token_scope = 'webhook.write webhook.read cob.write cob.read boleto-cobranca.read boleto-cobranca.write pix-automatico.write pix-automatico.read';
 
 	/**
 	 * Authentication endpoint
