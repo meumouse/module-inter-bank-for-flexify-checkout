@@ -51,9 +51,9 @@ class Automattic_Pix extends Base_Gateway {
         $this->method_description = __( 'Receba autorizações de Pix Automático diretamente pelo Banco Inter.', 'module-inter-bank-for-flexify-checkout' );
         $this->endpoint = 'pix-automatico/v1';
 
-        $this->title = Admin_Options::get_setting( 'pix_automatico_gateway_title', __( 'Pix Automático', 'module-inter-bank-for-flexify-checkout' ) );
-        $this->description = Admin_Options::get_setting( 'pix_automatico_gateway_description' );
-        $this->email_instructions = Admin_Options::get_setting( 'pix_automatico_gateway_email_instructions' );
+        $this->title = Admin_Options::get_setting('pix_automatico_gateway_title');
+        $this->description = Admin_Options::get_setting('pix_automatico_gateway_description');
+        $this->email_instructions = Admin_Options::get_setting('pix_automatico_gateway_email_instructions');
 
         add_action( 'woocommerce_email_before_order_table', array( $this, 'email_instructions' ), 10, 3 );
         add_action( 'woocommerce_thankyou_' . $this->id, array( $this, 'thankyou_page' ), 1000 );
@@ -149,6 +149,7 @@ class Automattic_Pix extends Base_Gateway {
 
         $amount_conflict = false;
         $due_days_conflict = false;
+        $has_valid_amount = false;
         $decimals = wc_get_price_decimals();
 
         foreach ( $order->get_items() as $item ) {
@@ -165,12 +166,20 @@ class Automattic_Pix extends Base_Gateway {
             $product_amount = $this->get_product_pix_meta( $product, '_inter_pix_auto_amount' );
 
             if ( '' !== $product_amount && null !== $product_amount ) {
-                $formatted_amount = wc_format_decimal( $product_amount, $decimals );
+                $quantity = (float) $item->get_quantity();
 
-                if ( null === $config['amount'] ) {
-                    $config['amount'] = $formatted_amount;
-                } elseif ( $formatted_amount !== $config['amount'] ) {
-                    $amount_conflict = true;
+                if ( $quantity > 0 ) {
+                    $line_total = (float) $item->get_total();
+                    $unit_amount = $line_total / $quantity;
+                    $formatted_amount = wc_format_decimal( $unit_amount, $decimals );
+
+                    if ( null === $config['amount'] ) {
+                        $config['amount'] = $formatted_amount;
+                    } elseif ( $formatted_amount !== $config['amount'] ) {
+                        $amount_conflict = true;
+                    }
+
+                    $has_valid_amount = true;
                 }
             }
 
@@ -187,7 +196,7 @@ class Automattic_Pix extends Base_Gateway {
             }
         }
 
-        if ( null === $config['amount'] ) {
+        if ( ! $has_valid_amount && null === $config['amount'] ) {
             $config['amount'] = wc_format_decimal( $order->get_total(), $decimals );
         }
 

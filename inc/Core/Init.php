@@ -33,6 +33,7 @@ class Init {
 		add_filter( 'plugin_action_links_' . FD_MODULE_INTER_BASENAME, array( $this, 'setup_action_links' ), 10, 4 );
 
         new \MeuMouse\Flexify_Checkout\Inter_Bank\Core\Admin();
+		new \MeuMouse\Flexify_Checkout\Inter_Bank\Views\Settings();
 		new \MeuMouse\Flexify_Checkout\Inter_Bank\Admin\Product_Automattic_Pix();
 		new \MeuMouse\Flexify_Checkout\Inter_Bank\Core\Assets();
 		new \MeuMouse\Flexify_Checkout\Inter_Bank\Core\Ajax();

@@ -76,10 +76,10 @@ class Pix extends Base_Gateway {
 	public function gateway_fields() {
 		return apply_filters( $this->id . '_setting_fields', array(
 			'enabled' => array(
-				'title' => __( 'Ativar/Desativar', 'module-inter-bank-for-flexify-checkout' ),
-				'type' => 'checkbox',
-				'label' => __( 'Ativar recebimento via Pix do banco Inter', 'module-inter-bank-for-flexify-checkout' ),
-				'default' => 'yes',
+				'title' 	=> __( 'Ativar/Desativar', 'module-inter-bank-for-flexify-checkout' ),
+				'type' 		=> 'checkbox',
+				'label' 	=> __( 'Ativar recebimento via Pix do banco Inter', 'module-inter-bank-for-flexify-checkout' ),
+				'default' 	=> 'yes',
 			),
 		));
 	}

@@ -52,26 +52,11 @@ class Product_Automattic_Pix {
 
         woocommerce_wp_text_input(
             [
-                'id'                => '_inter_pix_auto_amount',
-                'label'             => __( 'Valor da cobrança Pix Automático', 'module-inter-bank-for-flexify-checkout' ),
-                'type'              => 'number',
-                'value'             => $product->get_meta( '_inter_pix_auto_amount', true ),
-                'custom_attributes' => [
-                    'step' => '0.01',
-                    'min'  => '0',
-                ],
-                'description'       => __( 'Defina um valor específico para a cobrança automática deste produto. Deixe em branco para usar o total do pedido.', 'module-inter-bank-for-flexify-checkout' ),
-                'desc_tip'          => true,
-            ]
-        );
-
-        woocommerce_wp_text_input(
-            [
                 'id'          => '_inter_pix_auto_due_days',
                 'label'       => __( 'Prazo em dias', 'module-inter-bank-for-flexify-checkout' ),
                 'type'        => 'number',
                 'value'       => $product->get_meta( '_inter_pix_auto_due_days', true ),
-                'description' => __( 'Informe em quantos dias a cobrança deve expirar. Deixe em branco para usar a configuração padrão do Banco Inter.', 'module-inter-bank-for-flexify-checkout' ),
+                'description' => __( 'Informe em quantos dias a cobrança deve expirar. O valor do contrato segue automaticamente o preço efetivo do item comprado. Deixe em branco para usar a configuração padrão do Banco Inter.', 'module-inter-bank-for-flexify-checkout' ),
                 'desc_tip'    => true,
                 'custom_attributes' => [
                     'min' => '0',

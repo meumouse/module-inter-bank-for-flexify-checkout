@@ -223,9 +223,9 @@ abstract class Base_Gateway extends WC_Payment_Gateway {
      * @return void
      */
     public function handle_debug() {
-		if ( isset( $_GET['check_inter_bank_payments'] ) && current_user_can( 'manage_woocommerce' ) ) {
-			do_action( 'module_inter_bank_check_interboletov2' );
-			do_action( 'module_inter_bank_check_interpix' );
+		if ( isset( $_GET['check_inter_bank_payments'] ) && current_user_can('manage_woocommerce') ) {
+			do_action('module_inter_bank_check_interboletov2');
+			do_action('module_inter_bank_check_interpix');
 
 			wp_die( __( 'Você já pode fechar essa página. A consulta será feita em segundo plano.', 'module-inter-bank-for-flexify-checkout' ) );
 		}
