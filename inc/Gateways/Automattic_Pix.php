@@ -91,7 +91,8 @@ class Automattic_Pix extends Base_Gateway {
      */
     public function process_payment( $order_id ) {
         $order = wc_get_order( $order_id );
-        $result = $this->api->create_contract( $order );
+        $charge_args = $this->prepare_charge_configuration( $order );
+        $result = $this->api->create_contract( $order, $charge_args );
         $txid = $result->id ?? $result->txid ?? '';
 
         if ( $txid ) {
@@ -110,18 +111,126 @@ class Automattic_Pix extends Base_Gateway {
             }
         }
 
+        $order->update_meta_data( 'inter_pix_automatico_amount', $charge_args['amount'] );
+
+        if ( isset( $charge_args['due_days'] ) ) {
+            $order->update_meta_data( 'inter_pix_automatico_due_days', $charge_args['due_days'] );
+        } else {
+            $order->delete_meta_data( 'inter_pix_automatico_due_days' );
+        }
+
         $order->add_meta_data( 'inter_pix_automatico_contract', $result, true );
         $order->set_status( 'on-hold', __( 'Aguardando autorização do Pix Automático.', 'module-inter-bank-for-flexify-checkout' ) );
         $order->save();
 
         WC()->cart->empty_cart();
 
-        do_action( 'module_inter_bank_pix_automatico_new_contract', $order, $result );
+        do_action( 'module_inter_bank_pix_automatico_new_contract', $order, $result, $charge_args );
 
-        return [
-            'result'   => 'success',
+        return array(
+            'result' => 'success',
             'redirect' => $this->get_return_url( $order ),
-        ];
+        );
+    }
+
+
+    /**
+     * Build the charge configuration based on order items.
+     *
+     * @since 1.4.0
+     * @param \WC_Order $order | Order instance.
+     * @return array
+     */
+    protected function prepare_charge_configuration( $order ) {
+        $config = array(
+            'amount' => null,
+            'due_days' => null,
+        );
+
+        $amount_conflict = false;
+        $due_days_conflict = false;
+        $decimals = wc_get_price_decimals();
+
+        foreach ( $order->get_items() as $item ) {
+            if ( ! $item instanceof \WC_Order_Item_Product ) {
+                continue;
+            }
+
+            $product = $item->get_product();
+
+            if ( ! $product ) {
+                continue;
+            }
+
+            $product_amount = $this->get_product_pix_meta( $product, '_inter_pix_auto_amount' );
+
+            if ( '' !== $product_amount && null !== $product_amount ) {
+                $formatted_amount = wc_format_decimal( $product_amount, $decimals );
+
+                if ( null === $config['amount'] ) {
+                    $config['amount'] = $formatted_amount;
+                } elseif ( $formatted_amount !== $config['amount'] ) {
+                    $amount_conflict = true;
+                }
+            }
+
+            $product_due_days = $this->get_product_pix_meta( $product, '_inter_pix_auto_due_days' );
+
+            if ( '' !== $product_due_days && null !== $product_due_days ) {
+                $due_days_value = absint( $product_due_days );
+
+                if ( null === $config['due_days'] ) {
+                    $config['due_days'] = $due_days_value;
+                } elseif ( $due_days_value !== $config['due_days'] ) {
+                    $due_days_conflict = true;
+                }
+            }
+        }
+
+        if ( null === $config['amount'] ) {
+            $config['amount'] = wc_format_decimal( $order->get_total(), $decimals );
+        }
+
+        if ( null === $config['due_days'] ) {
+            unset( $config['due_days'] );
+        }
+
+        if ( $amount_conflict ) {
+            $order->add_order_note( __( 'Foram encontrados valores distintos configurados para Pix Automático. Utilizando o primeiro valor disponível.', 'module-inter-bank-for-flexify-checkout' ) );
+        }
+
+        if ( $due_days_conflict ) {
+            $order->add_order_note( __( 'Foram encontrados prazos diferentes configurados para Pix Automático. Utilizando o primeiro prazo disponível.', 'module-inter-bank-for-flexify-checkout' ) );
+        }
+
+        return $config;
+    }
+
+
+    /**
+     * Retrieve Pix Automático metadata for a product, including variation fallbacks.
+     *
+     * @since 1.4.0
+     * @param \WC_Product $product | Product or variation.
+     * @param string $meta_key | Meta key to retrieve.
+     * @return mixed
+     */
+    protected function get_product_pix_meta( $product, $meta_key ) {
+        $value = $product->get_meta( $meta_key, true );
+
+        if ( ( '' === $value || null === $value ) && $product->is_type( 'variation' ) ) {
+            $parent_id = $product->get_parent_id();
+
+            if ( $parent_id ) {
+                $parent_product = wc_get_product( $parent_id );
+
+                if ( $parent_product ) {
+                    $value = $parent_product->get_meta( $meta_key, true );
+                }
+            }
+        }
+
+        return $value;
     }
 
 
@@ -140,7 +249,7 @@ class Automattic_Pix extends Base_Gateway {
             return;
         }
 
-        wc_get_template( 'checkout/pix-automatico-details.php', [
+        wc_get_template( 'checkout/automattic-pix-details.php', [
             'id'               => $this->id,
             'order'            => $order,
             'is_email'         => true,
@@ -316,16 +425,30 @@ class Automattic_Pix extends Base_Gateway {
         $order->payment_complete();
         $order->add_order_note( __( 'Pagamento confirmado via Pix Automático.', 'module-inter-bank-for-flexify-checkout' ) );
 
+        $charge_config = array();
+        $decimals = wc_get_price_decimals();
+        $amount_meta = $order->get_meta('inter_pix_automatico_amount');
+
+        if ( '' !== $amount_meta && null !== $amount_meta ) {
+            $charge_config['amount'] = wc_format_decimal( $amount_meta, $decimals );
+        }
+
+        $due_days_meta = $order->get_meta('inter_pix_automatico_due_days');
+
+        if ( '' !== $due_days_meta && null !== $due_days_meta ) {
+            $charge_config['due_days'] = absint( $due_days_meta );
+        }
+
         /**
          * Triggered when a Pix Automático authorization/payment is confirmed.
          * Allows other parts of the system to create subsequent charges or update data.
          */
-        do_action( 'module_inter_bank_pix_automatico_confirmed', $order, $content );
+        do_action( 'module_inter_bank_pix_automatico_confirmed', $order, $content, $charge_config );
 
         /**
          * Hook fired for each charge processed via Pix Automático.
          */
-        do_action( 'module_inter_bank_pix_automatico_new_charge', $order, $content );
+        do_action( 'module_inter_bank_pix_automatico_new_charge', $order, $content, $charge_config );
 
         wp_send_json_success( [ 'message' => 'Success!' ] );
     }

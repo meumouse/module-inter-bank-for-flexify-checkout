@@ -22,11 +22,12 @@ class Automattic_Pix_API extends API_Base {
      * Create a new Pix Automático contract
      *
      * @since 1.4.0
-     * @param \WC_Order $order Order instance
+     * @param \WC_Order $order | Order instance
+     * @param array $charge_args | Optional charge configuration.
      * @return object
      * @throws Exception
      */
-    public function create_contract( $order ) {
+    public function create_contract( $order, $charge_args = array() ) {
         $document = $this->get_order_document( $order );
         $document_type = ( strlen( $document ) > 11 ) ? 'cnpj' : 'cpf';
 
@@ -34,16 +35,29 @@ class Automattic_Pix_API extends API_Base {
             throw new Exception( __( 'Informe seu documento para prosseguir.', 'module-inter-bank-for-flexify-checkout' ) );
         }
 
+        $charge_args = is_array( $charge_args ) ? $charge_args : array();
+        $amount = isset( $charge_args['amount'] ) ? wc_format_decimal( $charge_args['amount'] ) : wc_format_decimal( $order->get_total() );
+
         $data = [
             'pagador' => [
                 'nome' => $order->get_formatted_billing_full_name(),
                 $document_type => $document,
             ],
             'valor'   => [
-                'original' => $order->get_total(),
+                'original' => $amount,
             ],
             'solicitacaoPagador' => sprintf( __( 'Autorização do pedido #%s.', 'module-inter-bank-for-flexify-checkout' ), $order->get_id() ),
         ];
+
+        if ( isset( $charge_args['due_days'] ) && is_numeric( $charge_args['due_days'] ) ) {
+            $due_days = absint( $charge_args['due_days'] );
+
+            if ( $due_days > 0 ) {
+                $data['calendario'] = [
+                    'expiracao' => $due_days * DAY_IN_SECONDS,
+                ];
+            }
+        }
 
         $this->log( 'Criando contrato Pix Automático do pedido ' . $order->get_id() . ': ' . print_r( $data, true ) );
 
@@ -62,12 +76,30 @@ class Automattic_Pix_API extends API_Base {
     /**
      * Create a charge for a given contract
      *
-     * @param string $contract_id Contract identifier returned on creation
-     * @param array  $data Charge data
+     * @since 1.4.0
+     * @param string $contract_id | Contract identifier returned on creation
+     * @param array $data | Charge data
+     * @param array $charge_args | Optional charge configuration
      * @return object
      * @throws Exception
      */
-    public function create_charge( $contract_id, $data ) {
+    public function create_charge( $contract_id, $data, $charge_args = array() ) {
+        $charge_args = is_array( $charge_args ) ? $charge_args : [];
+
+        if ( ! isset( $data['valor']['original'] ) && isset( $charge_args['amount'] ) ) {
+            $data['valor']['original'] = wc_format_decimal( $charge_args['amount'] );
+        }
+
+        if ( ! isset( $data['calendario'] ) && isset( $charge_args['due_days'] ) && is_numeric( $charge_args['due_days'] ) ) {
+            $due_days = absint( $charge_args['due_days'] );
+
+            if ( $due_days > 0 ) {
+                $data['calendario'] = [
+                    'expiracao' => $due_days * DAY_IN_SECONDS,
+                ];
+            }
+        }
+
         $endpoint = sprintf( 'pix-automatico/v1/contratos/%s/cobrancas', $contract_id );
         $response = $this->do_request( $endpoint, 'POST', $data );
         $body = json_decode( $response['body'] );
