@@ -1,4 +1,4 @@
-Versão 1.4.0 (12/09/2025)
+Versão 1.4.0 (18/09/2025)
 * Correção de bugs
     - Duplicidade de informações do Pix na página de agradecimento e e-mails
 * Recurso adicionado: Pix automático

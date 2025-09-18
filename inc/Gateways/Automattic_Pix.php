@@ -3,7 +3,7 @@
 namespace MeuMouse\Flexify_Checkout\Inter_Bank\Gateways;
 
 use Exception;
-use MeuMouse\Flexify_Checkout\Inter_Bank\API\Pix_Automatico_API;
+use MeuMouse\Flexify_Checkout\Inter_Bank\API\Automattic_Pix_API;
 use MeuMouse\Flexify_Checkout\Admin\Admin_Options;
 use chillerlan\QRCode\QRCode;
 
@@ -16,7 +16,7 @@ defined('ABSPATH') || exit;
  * @since 1.4.0
  * @package MeuMouse.com
  */
-class Pix_Automatico extends Base_Gateway {
+class Automattic_Pix extends Base_Gateway {
 
     /**
      * Gateway ID
@@ -28,7 +28,7 @@ class Pix_Automatico extends Base_Gateway {
     /**
      * API instance
      *
-     * @var Pix_Automatico_API
+     * @var Automattic_Pix_API
      */
     public $api;
 
@@ -45,22 +45,22 @@ class Pix_Automatico extends Base_Gateway {
     public function __construct() {
         parent::__construct();
 
-        $this->icon               = apply_filters( 'inter_bank_pix_automatico_icon', FD_MODULE_INTER_ASSETS . 'img/pix.svg' );
-        $this->has_fields         = false;
-        $this->method_title       = __( 'Pix Automático Banco Inter', 'module-inter-bank-for-flexify-checkout' );
+        $this->icon = apply_filters( 'inter_bank_pix_automatico_icon', FD_MODULE_INTER_ASSETS . 'img/pix.svg' );
+        $this->has_fields = false;
+        $this->method_title = __( 'Pix Automático Banco Inter', 'module-inter-bank-for-flexify-checkout' );
         $this->method_description = __( 'Receba autorizações de Pix Automático diretamente pelo Banco Inter.', 'module-inter-bank-for-flexify-checkout' );
-        $this->endpoint           = 'pix-automatico/v1';
+        $this->endpoint = 'pix-automatico/v1';
 
-        $this->title             = Admin_Options::get_setting( 'pix_automatico_gateway_title', __( 'Pix Automático', 'module-inter-bank-for-flexify-checkout' ) );
-        $this->description       = Admin_Options::get_setting( 'pix_automatico_gateway_description' );
+        $this->title = Admin_Options::get_setting( 'pix_automatico_gateway_title', __( 'Pix Automático', 'module-inter-bank-for-flexify-checkout' ) );
+        $this->description = Admin_Options::get_setting( 'pix_automatico_gateway_description' );
         $this->email_instructions = Admin_Options::get_setting( 'pix_automatico_gateway_email_instructions' );
 
-        add_action( 'woocommerce_email_before_order_table', [ $this, 'email_instructions' ], 10, 3 );
-        add_action( 'woocommerce_thankyou_' . $this->id, [ $this, 'thankyou_page' ], 1000 );
-        add_action( 'woocommerce_my_account_my_orders_actions', [ $this, 'my_account_button' ], 10, 2 );
-        add_action( 'woocommerce_order_details_after_customer_details', [ $this, 'my_account_order_details' ] );
+        add_action( 'woocommerce_email_before_order_table', array( $this, 'email_instructions' ), 10, 3 );
+        add_action( 'woocommerce_thankyou_' . $this->id, array( $this, 'thankyou_page' ), 1000 );
+        add_action( 'woocommerce_my_account_my_orders_actions', array( $this, 'my_account_button' ), 10, 2 );
+        add_action( 'woocommerce_order_details_after_customer_details', array( $this, 'my_account_order_details' ) );
 
-        $this->api = new Pix_Automatico_API( $this );
+        $this->api = new Automattic_Pix_API( $this );
     }
 
 

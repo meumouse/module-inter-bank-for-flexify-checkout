@@ -16,7 +16,7 @@ defined('ABSPATH') || exit;
  * @see https://developers.inter.co/references/pix-automatico
  * @package MeuMouse.com
  */
-class Pix_Automatico_API extends API_Base {
+class Automattic_Pix_API extends API_Base {
 
     /**
      * Create a new Pix Automático contract

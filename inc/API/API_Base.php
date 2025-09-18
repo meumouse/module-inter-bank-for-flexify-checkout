@@ -226,18 +226,46 @@ abstract class API_Base {
 	 * Send certificates with cURL request
 	 * 
 	 * @since 1.0.0
+	 * @version 1.4.0
 	 * @param $handle | The cURL handle returned by curl_init() (passed by reference)
 	 * @param $request | The HTTP request arguments
 	 * @param $url | The request URL
 	 * @return void
 	 */
 	public function inter_http_api_curl( $handle, $request, $url ) {
-		if ( false !== strpos( $url, $this->get_api_url() ) && ( false !== strpos( $url, $this->gateway->endpoint ) || false !== strpos( $url, 'current_method=' . $this->gateway->id ) ) ) {
-			curl_setopt( $handle, CURLOPT_SSLCERT, $this->gateway->cert_crt );
-			curl_setopt( $handle, CURLOPT_SSLKEY, $this->gateway->cert_key );
+		$is_inter_call = ( false !== strpos( $url, $this->get_api_url() ) );
+		$matches_method = (
+			false !== strpos( $url, $this->gateway->endpoint ) ||
+			false !== strpos( $url, 'current_method=' . $this->gateway->id )
+		);
 
-			$this->log( 'Certificate .crt: ' . print_r( $this->gateway->cert_crt, true ), 'info' );
-			$this->log( 'Certificate .key: ' . print_r( $this->gateway->cert_key, true ), 'info' );
+		if ( $is_inter_call && $matches_method ) {
+			$crt = $this->gateway->cert_crt;
+			$key = $this->gateway->cert_key;
+
+			if ( empty( $crt ) || empty( $key ) ) {
+				$this->log('Certificados não configurados (crt/key vazios).', 'emergency');
+				return;
+			}
+
+			if ( ! file_exists( $crt ) || ! is_readable( $crt ) ) {
+				$this->log('Certificado CRT inacessível: ' . $crt, 'emergency');
+				return;
+			}
+
+			if ( ! file_exists( $key ) || ! is_readable( $key ) ) {
+				$this->log('Chave KEY inacessível: ' . $key, 'emergency');
+				return;
+			}
+
+			curl_setopt( $handle, CURLOPT_SSLCERT, $crt );
+			curl_setopt( $handle, CURLOPT_SSLKEY, $key );
+
+			$this->log( 'Using certificate (file): crt=' . $crt . ' | key=' . $key, 'info' );
+
+			if ( ! empty( $this->gateway->cert_crt_url ) || ! empty( $this->gateway->cert_key_url ) ) {
+				$this->log( 'Certificate URLs: crt=' . ( $this->gateway->cert_crt_url ?? '-' ) . ' | key=' . ( $this->gateway->cert_key_url ?? '-' ) , 'info' );
+			}
 		}
 	}
 }
