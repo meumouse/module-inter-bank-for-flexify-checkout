@@ -79,7 +79,7 @@ class Init {
 		$add = array(
 			\MeuMouse\Flexify_Checkout\Inter_Bank\Gateways\Bank_Slip::class,
 			\MeuMouse\Flexify_Checkout\Inter_Bank\Gateways\Pix::class,
-			\MeuMouse\Flexify_Checkout\Inter_Bank\Gateways\Pix_Automatico::class,
+			\MeuMouse\Flexify_Checkout\Inter_Bank\Gateways\Automattic_Pix::class,
 		);
 
 		foreach ( $add as $class ) {

@@ -47,35 +47,18 @@ class Product_Automattic_Pix {
         }
 
         echo '<div class="options_group">';
-            // interval number
-            woocommerce_wp_text_input([
-                'id'                => '_inter_pix_auto_interval_count',
-                'label'             => __( 'Quantidade de intervalos', 'module-inter-bank-for-flexify-checkout' ),
-                'type'              => 'number',
-                'value'             => $product->get_meta( '_inter_pix_auto_interval_count', true ),
-                'custom_attributes' => [
-                    'min'  => '1',
-                    'max'  => '365',
-                    'step' => '1',
-                ],
-                'description'       => __( 'Número de unidades entre cada cobrança recorrente (1 a 365) para Pix Automático.', 'module-inter-bank-for-flexify-checkout' ),
-                'desc_tip'          => true,
-            ]);
-
-            // interval unit
             woocommerce_wp_select([
-                'id'      => '_inter_pix_auto_interval_unit',
-                'label'   => __( 'Unidade do intervalo', 'module-inter-bank-for-flexify-checkout' ),
-                'value'   => $product->get_meta( '_inter_pix_auto_interval_unit', true ),
-                'options' => [
+                'id'      => '_inter_pix_auto_interval_period',
+                'label'   => __( 'Periodicidade das cobranças', 'module-inter-bank-for-flexify-checkout' ),
+                'value'   => $product->get_meta( '_inter_pix_auto_interval_period', true ),
+                'options' => array(
                     ''          => __( 'Selecione', 'module-inter-bank-for-flexify-checkout' ),
-                    'day'       => __( 'Dias', 'module-inter-bank-for-flexify-checkout' ),
-                    'week'      => __( 'Semanas', 'module-inter-bank-for-flexify-checkout' ),
-                    'month'     => __( 'Meses', 'module-inter-bank-for-flexify-checkout' ),
-                    'quarter'   => __( 'Trimestre', 'module-inter-bank-for-flexify-checkout' ),
-                    'semester'  => __( 'Semestre', 'module-inter-bank-for-flexify-checkout' ),
+                    'week'      => __( 'Semanal', 'module-inter-bank-for-flexify-checkout' ),
+                    'month'     => __( 'Mensal', 'module-inter-bank-for-flexify-checkout' ),
+                    'quarter'   => __( 'Trimestral', 'module-inter-bank-for-flexify-checkout' ),
+                    'semester'  => __( 'Semestral', 'module-inter-bank-for-flexify-checkout' ),
                     'year'      => __( 'Anual', 'module-inter-bank-for-flexify-checkout' ),
-                ],
+                ),
                 'description' => __( 'Período base da recorrência para o Pix Automático.', 'module-inter-bank-for-flexify-checkout' ),
                 'desc_tip'    => true,
             ]);
@@ -95,25 +78,14 @@ class Product_Automattic_Pix {
             return;
         }
 
-        // save interval value
-        if ( isset( $_POST['_inter_pix_auto_interval_count'] ) ) {
-            $count = absint( wp_unslash( $_POST['_inter_pix_auto_interval_count'] ) );
-            
-            if ( $count > 0 ) {
-                $product->update_meta_data( '_inter_pix_auto_interval_count', $count );
-            } else {
-                $product->delete_meta_data( '_inter_pix_auto_interval_count' );
-            }
-        }
-
         // save interval unit
-        if ( isset( $_POST['_inter_pix_auto_interval_unit'] ) ) {
-            $unit = sanitize_text_field( wp_unslash( $_POST['_inter_pix_auto_interval_unit'] ) );
+        if ( isset( $_POST['_inter_pix_auto_interval_period'] ) ) {
+            $unit = sanitize_text_field( wp_unslash( $_POST['_inter_pix_auto_interval_period'] ) );
            
             if ( $unit ) {
-                $product->update_meta_data( '_inter_pix_auto_interval_unit', $unit );
+                $product->update_meta_data( '_inter_pix_auto_interval_period', $unit );
             } else {
-                $product->delete_meta_data( '_inter_pix_auto_interval_unit' );
+                $product->delete_meta_data( '_inter_pix_auto_interval_period' );
             }
         }
     }
@@ -136,35 +108,19 @@ class Product_Automattic_Pix {
         $variation_id = $variation->ID;
 
         echo '<div class="options_group form-row form-row-full">';
-            woocommerce_wp_text_input([
-                'id'                => "_inter_pix_auto_interval_count_{$variation_id}",
-                'name'              => "_inter_pix_auto_interval_count[{$variation_id}]",
-                'label'             => __( 'Quantidade de intervalos', 'module-inter-bank-for-flexify-checkout' ),
-                'type'              => 'number',
-                'value'             => get_post_meta( $variation_id, '_inter_pix_auto_interval_count', true ),
-                'custom_attributes' => [
-                    'min'  => '1',
-                    'max'  => '365',
-                    'step' => '1',
-                ],
-                'description'       => __( 'Número de unidades entre cada cobrança recorrente (deixe vazio para herdar do produto pai), para Pix Automático.', 'module-inter-bank-for-flexify-checkout' ),
-                'desc_tip'          => true,
-            ]);
-
             woocommerce_wp_select([
                 'id'          => "_inter_pix_auto_interval_unit_{$variation_id}",
-                'name'        => "_inter_pix_auto_interval_unit[{$variation_id}]",
-                'label'       => __( 'Unidade do intervalo', 'module-inter-bank-for-flexify-checkout' ),
-                'value'       => get_post_meta( $variation_id, '_inter_pix_auto_interval_unit', true ),
-                'options'     => [
+                'name'        => "_inter_pix_auto_interval_period[{$variation_id}]",
+                'label'       => __( 'Periodicidade das cobranças', 'module-inter-bank-for-flexify-checkout' ),
+                'value'       => get_post_meta( $variation_id, '_inter_pix_auto_interval_period', true ),
+                'options' => array(
                     ''          => __( 'Herdar do produto pai', 'module-inter-bank-for-flexify-checkout' ),
-                    'day'       => __( 'Dias', 'module-inter-bank-for-flexify-checkout' ),
-                    'week'      => __( 'Semanas', 'module-inter-bank-for-flexify-checkout' ),
-                    'month'     => __( 'Meses', 'module-inter-bank-for-flexify-checkout' ),
-                    'quarter'   => __( 'Trimestre', 'module-inter-bank-for-flexify-checkout' ),
-                    'semester'  => __( 'Semestre', 'module-inter-bank-for-flexify-checkout' ),
+                    'week'      => __( 'Semanal', 'module-inter-bank-for-flexify-checkout' ),
+                    'month'     => __( 'Mensal', 'module-inter-bank-for-flexify-checkout' ),
+                    'quarter'   => __( 'Trimestral', 'module-inter-bank-for-flexify-checkout' ),
+                    'semester'  => __( 'Semestral', 'module-inter-bank-for-flexify-checkout' ),
                     'year'      => __( 'Anual', 'module-inter-bank-for-flexify-checkout' ),
-                ],
+                ),
                 'description' => __( 'Período base da recorrência (deixe vazio para herdar do produto pai).', 'module-inter-bank-for-flexify-checkout' ),
                 'desc_tip'    => true,
             ]);
@@ -184,27 +140,15 @@ class Product_Automattic_Pix {
             return;
         }
 
-        // interval_count
-        if ( isset( $_POST['_inter_pix_auto_interval_count'][ $variation_id ] ) ) {
-            $raw = wp_unslash( $_POST['_inter_pix_auto_interval_count'][ $variation_id ] );
-            $val = ( '' === trim( (string) $raw ) ) ? '' : absint( $raw );
-
-            if ( '' === $val || $val <= 0 ) {
-                delete_post_meta( $variation_id, '_inter_pix_auto_interval_count' ); // herda do pai
-            } else {
-                update_post_meta( $variation_id, '_inter_pix_auto_interval_count', $val );
-            }
-        }
-
-        // interval_unit
-        if ( isset( $_POST['_inter_pix_auto_interval_unit'][ $variation_id ] ) ) {
-            $raw = wp_unslash( $_POST['_inter_pix_auto_interval_unit'][ $variation_id ] );
+        // interval period
+        if ( isset( $_POST['_inter_pix_auto_interval_period'][ $variation_id ] ) ) {
+            $raw = wp_unslash( $_POST['_inter_pix_auto_interval_period'][ $variation_id ] );
             $unit = sanitize_text_field( $raw );
 
             if ( '' === $unit ) {
-                delete_post_meta( $variation_id, '_inter_pix_auto_interval_unit' ); // herda do pai
+                delete_post_meta( $variation_id, '_inter_pix_auto_interval_period' ); // herda do pai
             } else {
-                update_post_meta( $variation_id, '_inter_pix_auto_interval_unit', $unit );
+                update_post_meta( $variation_id, '_inter_pix_auto_interval_period', $unit );
             }
         }
     }
@@ -217,7 +161,7 @@ class Product_Automattic_Pix {
      * @param WC_Product $product | Product object
      * @return array{count:int|null, unit:string|null}
      */
-    public static function get_effective_interval_settings( $product ) {
+/*    public static function get_effective_interval_settings( $product ) {
         if ( ! $product instanceof \WC_Product ) {
             return [ 'count' => null, 'unit' => null ];
         }
@@ -229,7 +173,7 @@ class Product_Automattic_Pix {
             $variation_id = $product->get_id();
             $parent_id = $product->get_parent_id();
             $count_meta = get_post_meta( $variation_id, '_inter_pix_auto_interval_count', true );
-            $unit_meta = get_post_meta( $variation_id, '_inter_pix_auto_interval_unit', true );
+            $unit_meta = get_post_meta( $variation_id, '_inter_pix_auto_interval_period', true );
 
             if ( '' !== $count_meta ) {
                 $count = absint( $count_meta );
@@ -246,13 +190,13 @@ class Product_Automattic_Pix {
             }
 
             if ( null === $unit ) {
-                $unit_parent = get_post_meta( $parent_id, '_inter_pix_auto_interval_unit', true );
+                $unit_parent = get_post_meta( $parent_id, '_inter_pix_auto_interval_period', true );
                 $unit = ( '' !== $unit_parent ) ? sanitize_text_field( $unit_parent ) : null;
             }
         } else {
             // simple product
             $count_meta = $product->get_meta( '_inter_pix_auto_interval_count', true );
-            $unit_meta  = $product->get_meta( '_inter_pix_auto_interval_unit', true );
+            $unit_meta  = $product->get_meta( '_inter_pix_auto_interval_period', true );
             $count = ( '' !== $count_meta ) ? absint( $count_meta ) : null;
             $unit = ( '' !== $unit_meta ) ? sanitize_text_field( $unit_meta ) : null;
         }
@@ -261,5 +205,5 @@ class Product_Automattic_Pix {
             'count' => $count,
             'unit' => $unit,
         );
-    }
+    }*/
 }
