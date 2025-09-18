@@ -44,6 +44,11 @@ class Admin {
 				)
 			);
 		}, 20 );
+
+		// display notice when sandbox mode is enabled
+		if ( Admin_Options::get_setting('inter_bank_env_mode') === 'sandbox' ) {
+			add_action( 'admin_notices', array( $this, 'sandbox_mode_notice' ) );
+		}
 	}
 
 
@@ -165,4 +170,21 @@ class Admin {
 		}
 	}
 
+
+	/**
+	 * Display notice when sandbox mode is active.
+	 *
+	 * @since 1.4.0
+	 * @return void
+	 */
+	public function sandbox_mode_notice() {
+		if ( ! current_user_can('manage_options') || Admin_Options::get_setting('inter_bank_env_mode') !== 'sandbox' ) {
+			return;
+		}
+
+		$class = 'notice notice-warning is-dismissible';
+		$message = __( 'O ambiente Sandbox do banco Inter está disponível das 8h às 20h, de segunda a sexta-feira. Durante esse período, você poderá realizar testes e simulações', 'module-inter-bank-for-flexify-checkout' );
+
+		printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), $message );
+	}
 }

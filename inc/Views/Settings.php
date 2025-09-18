@@ -40,7 +40,7 @@ class Settings {
 		<div id="require_inter_bank_module_container" class="popup-container">
 			<div class="popup-content popup-lg">
 				<div class="popup-header">
-				<h5 class="popup-title"><?php echo esc_html__( 'Configure as formas de pagamento disponíveis:', 'module-inter-bank-for-flexify-checkout' ); ?></h5>
+				<h5 class="popup-title"><?php esc_html_e( 'Configure as formas de pagamento disponíveis:', 'module-inter-bank-for-flexify-checkout' ); ?></h5>
 				<button id="require_inter_bank_module_close" class="btn-close fs-lg" aria-label="<?php esc_attr( 'Fechar', 'module-inter-bank-for-flexify-checkout' ); ?>"></button>
 				</div>
 
@@ -50,7 +50,7 @@ class Settings {
 						<tr>
 							<th>
 								<?php echo esc_html( 'Ativar modo depuração', 'module-inter-bank-for-flexify-checkout' ); ?>
-								<span class="flexify-checkout-description"><?php echo esc_html__( 'Ative o modo depuração para salvar o registro de requisições da API.', 'module-inter-bank-for-flexify-checkout' ) ?></span>
+								<span class="flexify-checkout-description"><?php esc_html_e( 'Ative o modo depuração para salvar o registro de requisições da API.', 'module-inter-bank-for-flexify-checkout' ) ?></span>
 							</th>
 							<td>
 								<div class="form-check form-switch">
@@ -62,13 +62,13 @@ class Settings {
 						<tr>
 							<th>
 								<?php echo esc_html( 'Ambiente da API', 'module-inter-bank-for-flexify-checkout' ); ?>
-								<span class="flexify-checkout-description"><?php echo esc_html__( 'Permite definir a integração como modo Produção (Operacional) ou Sandbox (Testes).', 'module-inter-bank-for-flexify-checkout' ) ?></span>
+								<span class="flexify-checkout-description"><?php esc_html_e( 'Permite definir a integração como modo Produção (Operacional) ou Sandbox (Testes).', 'module-inter-bank-for-flexify-checkout' ) ?></span>
 							</th>
 
 							<td>
 								<select name="inter_bank_env_mode" class="form-select">
-									<option value="production" <?php selected( Admin_Options::get_setting('inter_bank_env_mode'), 'production' ) ?>><?php echo esc_html__( 'Produção (Operacional)', 'module-inter-bank-for-flexify-checkout' ) ?></option>
-									<option value="sandbox" <?php selected( Admin_Options::get_setting('inter_bank_env_mode'), 'sandbox' ) ?>><?php echo esc_html__( 'Sandbox (Testes)', 'module-inter-bank-for-flexify-checkout' ) ?></option>
+									<option value="production" <?php selected( Admin_Options::get_setting('inter_bank_env_mode'), 'production' ) ?>><?php esc_html_e( 'Produção (Operacional)', 'module-inter-bank-for-flexify-checkout' ) ?></option>
+									<option value="sandbox" <?php selected( Admin_Options::get_setting('inter_bank_env_mode'), 'sandbox' ) ?>><?php esc_html_e( 'Sandbox (Testes)', 'module-inter-bank-for-flexify-checkout' ) ?></option>
 								</select>
 							</td>
 						</tr>
@@ -76,7 +76,7 @@ class Settings {
 						<tr>
 							<th>
 								<?php echo esc_html( 'ClientID', 'module-inter-bank-for-flexify-checkout' ); ?>
-								<span class="flexify-checkout-description"><?php echo esc_html__( 'Chave aleatória ClientID da API do banco Inter.', 'module-inter-bank-for-flexify-checkout' ) ?></span>
+								<span class="flexify-checkout-description"><?php esc_html_e( 'Chave aleatória ClientID da API do banco Inter.', 'module-inter-bank-for-flexify-checkout' ) ?></span>
 							</th>
 							<td>
 								<input type="text" class="form-control input-control-wd-20" name="inter_bank_client_id" value="<?php echo Admin_Options::get_setting('inter_bank_client_id' ) ?>"/>
@@ -86,7 +86,7 @@ class Settings {
 						<tr>
 							<th>
 								<?php echo esc_html( 'ClientSecret', 'module-inter-bank-for-flexify-checkout' ); ?>
-								<span class="flexify-checkout-description"><?php echo esc_html__( 'Chave aleatória ClientSecret da API do banco Inter.', 'module-inter-bank-for-flexify-checkout' ) ?></span>
+								<span class="flexify-checkout-description"><?php esc_html_e( 'Chave aleatória ClientSecret da API do banco Inter.', 'module-inter-bank-for-flexify-checkout' ) ?></span>
 							</th>
 							<td>
 								<input type="text" class="form-control input-control-wd-20" name="inter_bank_client_secret" value="<?php echo Admin_Options::get_setting('inter_bank_client_secret' ) ?>"/>
@@ -96,7 +96,7 @@ class Settings {
 						<tr>
 							<th>
 								<?php echo esc_html( 'Data de expiração das credenciais', 'module-inter-bank-for-flexify-checkout' ); ?>
-								<span class="flexify-checkout-description"><?php echo esc_html__( 'Informe a data de quando irá expirar as credenciais da aplicação, assim poderemos te avisar 7 dias antes das credenciais serem revogadas.', 'module-inter-bank-for-flexify-checkout' ) ?></span>
+								<span class="flexify-checkout-description"><?php esc_html_e( 'Informe a data de quando irá expirar as credenciais da aplicação, assim poderemos te avisar 7 dias antes das credenciais serem revogadas.', 'module-inter-bank-for-flexify-checkout' ) ?></span>
 							</th>
 							<td>
 								<input type="text" class="form-control input-control-wd-10 dateselect" name="inter_bank_expire_date" value="<?php echo Admin_Options::get_setting('inter_bank_expire_date' ) ?>"/>
@@ -106,7 +106,7 @@ class Settings {
 						<tr>
 							<th>
 								<?php echo esc_html( 'Envie sua chave e certificado', 'module-inter-bank-for-flexify-checkout' ); ?>
-								<span class="flexify-checkout-description"><?php echo esc_html__( 'Envie sua chave e certificado que você recebeu do banco Inter ao criar a aplicação.', 'module-inter-bank-for-flexify-checkout' ) ?></span>
+								<span class="flexify-checkout-description"><?php esc_html_e( 'Envie sua chave e certificado que você recebeu do banco Inter ao criar a aplicação.', 'module-inter-bank-for-flexify-checkout' ) ?></span>
 							</th>
 						</tr>
 					</tbody>
@@ -188,8 +188,8 @@ class Settings {
 						<!-- START INTER PIX -->
 						<tr>
 							<th>
-							<?php echo esc_html__( 'Ativar recebimento de pagamentos com Pix', 'module-inter-bank-for-flexify-checkout' ); ?>
-							<span class="flexify-checkout-description"><?php echo esc_html__( 'Ative esta opção para configurar recibimentos via Pix com aprovação automática gratuitamente (Disponível apenas no Brasil).', 'module-inter-bank-for-flexify-checkout' ) ?></span>
+							<?php esc_html_e( 'Ativar recebimento de pagamentos com Pix', 'module-inter-bank-for-flexify-checkout' ); ?>
+							<span class="flexify-checkout-description"><?php esc_html_e( 'Ative esta opção para configurar recibimentos via Pix com aprovação automática gratuitamente (Disponível apenas no Brasil).', 'module-inter-bank-for-flexify-checkout' ) ?></span>
 							</th>
 							<td class="d-flex align-items-center">
 							<div class="form-check form-switch <?php echo ( ! License::is_valid() ) ? 'require-pro' : ''; ?>">
@@ -201,7 +201,7 @@ class Settings {
 						<tr class="require-enabled-inter-pix">
 							<th>
 							<?php echo esc_html( 'Título da forma de pagamento Pix', 'module-inter-bank-for-flexify-checkout' ); ?>
-							<span class="flexify-checkout-description"><?php echo esc_html__( 'Título que o usuário verá na finalização de compra (Disponível apenas no Brasil).', 'module-inter-bank-for-flexify-checkout' ) ?></span>
+							<span class="flexify-checkout-description"><?php esc_html_e( 'Título que o usuário verá na finalização de compra (Disponível apenas no Brasil).', 'module-inter-bank-for-flexify-checkout' ) ?></span>
 							</th>
 							<td>
 							<input type="text" class="form-control input-control-wd-20" name="pix_gateway_title" value="<?php echo Admin_Options::get_setting('pix_gateway_title' ) ?>"/>
@@ -211,7 +211,7 @@ class Settings {
 						<tr class="require-enabled-inter-pix">
 							<th>
 								<?php echo esc_html( 'Descrição da forma de pagamento Pix', 'module-inter-bank-for-flexify-checkout' ); ?>
-								<span class="flexify-checkout-description"><?php echo esc_html__( 'Descrição da forma de pagamento que o usuário verá na finalização de compra.', 'module-inter-bank-for-flexify-checkout' ) ?></span>
+								<span class="flexify-checkout-description"><?php esc_html_e( 'Descrição da forma de pagamento que o usuário verá na finalização de compra.', 'module-inter-bank-for-flexify-checkout' ) ?></span>
 							</th>
 							<td>
 								<input type="text" class="form-control input-control-wd-20" name="pix_gateway_description" value="<?php echo Admin_Options::get_setting('pix_gateway_description' ) ?>"/>
@@ -221,7 +221,7 @@ class Settings {
 						<tr class="require-enabled-inter-pix">
 							<th>
 								<?php echo esc_html( 'Instruções por e-mail da forma de pagamento Pix', 'module-inter-bank-for-flexify-checkout' ); ?>
-								<span class="flexify-checkout-description"><?php echo esc_html__( 'Texto exibido no e-mail junto do botão de copiar código Copia e Cola do Pix.', 'module-inter-bank-for-flexify-checkout' ) ?></span>
+								<span class="flexify-checkout-description"><?php esc_html_e( 'Texto exibido no e-mail junto do botão de copiar código Copia e Cola do Pix.', 'module-inter-bank-for-flexify-checkout' ) ?></span>
 							</th>
 							<td>
 								<input type="text" class="form-control input-control-wd-20" name="pix_gateway_email_instructions" value="<?php echo Admin_Options::get_setting('pix_gateway_email_instructions' ) ?>"/>
@@ -231,7 +231,7 @@ class Settings {
 						<tr class="require-enabled-inter-pix">
 							<th>
 								<?php echo esc_html( 'Chave Pix', 'module-inter-bank-for-flexify-checkout' ); ?>
-								<span class="flexify-checkout-description"><?php echo esc_html__( 'Chave Pix associada ao banco Inter que receberá o pagamento. Para chaves do tipo celular ou CNPJ, utilize apenas números.', 'module-inter-bank-for-flexify-checkout' ) ?></span>
+								<span class="flexify-checkout-description"><?php esc_html_e( 'Chave Pix associada ao banco Inter que receberá o pagamento. Para chaves do tipo celular ou CNPJ, utilize apenas números.', 'module-inter-bank-for-flexify-checkout' ) ?></span>
 							</th>
 							<td>
 								<input type="text" class="form-control input-control-wd-20" name="pix_gateway_receipt_key" value="<?php echo Admin_Options::get_setting('pix_gateway_receipt_key' ) ?>"/>
@@ -241,7 +241,7 @@ class Settings {
 						<tr class="require-enabled-inter-pix">
 							<th>
 								<?php echo esc_html( 'Validade do Pix', 'module-inter-bank-for-flexify-checkout' ); ?>
-								<span class="flexify-checkout-description"><?php echo esc_html__( 'Prazo máximo para pagamento do Pix em minutos.', 'module-inter-bank-for-flexify-checkout' ) ?></span>
+								<span class="flexify-checkout-description"><?php esc_html_e( 'Prazo máximo para pagamento do Pix em minutos.', 'module-inter-bank-for-flexify-checkout' ) ?></span>
 							</th>
 							<td>
 								<input type="number" class="form-control input-control-wd-5" name="pix_gateway_expires" value="<?php echo Admin_Options::get_setting('pix_gateway_expires' ) ?>"/>
@@ -253,8 +253,8 @@ class Settings {
 						<!-- START INTER PIX AUTOMATICO -->
 						<tr>
 							<th>
-								<?php echo esc_html__( 'Ativar recebimento de pagamentos com Pix Automático', 'module-inter-bank-for-flexify-checkout' ); ?>
-								<span class="flexify-checkout-description"><?php echo esc_html__( 'Ative esta opção para configurar recebimentos via Pix Automático com aprovação automática.', 'module-inter-bank-for-flexify-checkout' ) ?></span>
+								<?php esc_html_e( 'Ativar recebimento de pagamentos com Pix Automático', 'module-inter-bank-for-flexify-checkout' ); ?>
+								<span class="flexify-checkout-description"><?php esc_html_e( 'Ative esta opção para configurar recebimentos via Pix Automático com aprovação automática.', 'module-inter-bank-for-flexify-checkout' ) ?></span>
 							</th>
 							<td class="d-flex align-items-center">
 								<div class="form-check form-switch">
@@ -266,7 +266,7 @@ class Settings {
 						<tr class="require-enabled-inter-pix-automatico">
 							<th>
 								<?php echo esc_html( 'Título da forma de pagamento Pix Automático', 'module-inter-bank-for-flexify-checkout' ); ?>
-								<span class="flexify-checkout-description"><?php echo esc_html__( 'Título que o usuário verá na finalização de compra para o Pix Automático.', 'module-inter-bank-for-flexify-checkout' ) ?></span>
+								<span class="flexify-checkout-description"><?php esc_html_e( 'Título que o usuário verá na finalização de compra para o Pix Automático.', 'module-inter-bank-for-flexify-checkout' ) ?></span>
 							</th>
 							<td>
 								<input type="text" class="form-control input-control-wd-20" name="pix_automatico_gateway_title" value="<?php echo Admin_Options::get_setting('pix_automatico_gateway_title' ) ?>"/>
@@ -276,7 +276,7 @@ class Settings {
 						<tr class="require-enabled-inter-pix-automatico">
 							<th>
 								<?php echo esc_html( 'Descrição da forma de pagamento Pix Automático', 'module-inter-bank-for-flexify-checkout' ); ?>
-								<span class="flexify-checkout-description"><?php echo esc_html__( 'Descrição exibida durante a finalização da compra.', 'module-inter-bank-for-flexify-checkout' ) ?></span>
+								<span class="flexify-checkout-description"><?php esc_html_e( 'Descrição exibida durante a finalização da compra.', 'module-inter-bank-for-flexify-checkout' ) ?></span>
 							</th>
 							<td>
 								<input type="text" class="form-control input-control-wd-20" name="pix_automatico_gateway_description" value="<?php echo Admin_Options::get_setting('pix_automatico_gateway_description' ) ?>"/>
@@ -286,7 +286,7 @@ class Settings {
 						<tr class="require-enabled-inter-pix-automatico">
 							<th>
 								<?php echo esc_html( 'Chave Pix de recebimento', 'module-inter-bank-for-flexify-checkout' ); ?>
-								<span class="flexify-checkout-description"><?php echo esc_html__( 'Chave Pix que receberá os pagamentos automáticos.', 'module-inter-bank-for-flexify-checkout' ) ?></span>
+								<span class="flexify-checkout-description"><?php esc_html_e( 'Chave Pix que receberá os pagamentos automáticos.', 'module-inter-bank-for-flexify-checkout' ) ?></span>
 							</th>
 							<td>
 								<input type="text" class="form-control input-control-wd-20" name="pix_automatico_gateway_receipt_key" value="<?php echo Admin_Options::get_setting('pix_automatico_gateway_receipt_key' ) ?>"/>
@@ -296,11 +296,20 @@ class Settings {
 						<tr class="require-enabled-inter-pix-automatico">
 							<th>
 								<?php echo esc_html( 'Permitir retentativas de cobrança', 'module-inter-bank-for-flexify-checkout' ); ?>
-								<span class="flexify-checkout-description"><?php echo esc_html__( 'Permite até 3 retentativas em dias diferentes no intervalo de até 7 dias corridos contados a partir da data de liquidação prevista na instrução de pagamento original.', 'module-inter-bank-for-flexify-checkout' ) ?></span>
+								<span class="flexify-checkout-description"><?php esc_html_e( 'Permite até 3 retentativas em dias diferentes no intervalo de até 7 dias corridos contados a partir da data de liquidação prevista na instrução de pagamento original.', 'module-inter-bank-for-flexify-checkout' ) ?></span>
 							</th>
 							<td class="d-flex align-items-center">
 								<div class="form-check form-switch">
 									<input type="checkbox" class="toggle-switch" id="enable_inter_retry_billing_policy" name="enable_inter_retry_billing_policy" value="yes" <?php checked( Admin_Options::get_setting('enable_inter_retry_billing_policy') === 'yes' && class_exists('Module_Inter_Bank') ); ?>/>
+								</div>
+							</td>
+						</tr>
+
+						<tr class="require-enabled-inter-pix-automatico">
+							<td class="d-flex align-items-center">
+								<div class="alert alert-info d-flex align-items-center text-left">
+									<svg class="icon icon-lg icon-info me-2" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8z"></path><path d="M11 11h2v6h-2zm0-4h2v2h-2z"></path></svg>
+									<?php esc_html_e( 'De acordo com normativas do BACEN, a API Pix Automático pode ser oferecida apenas a CNPJs com pelo menos 6 meses de atividade.', 'module-inter-bank-for-flexify-checkout' ) ?>
 								</div>
 							</td>
 						</tr>
@@ -310,16 +319,16 @@ class Settings {
 						<!-- START INTER BANK SLIP -->
 						<tr>
 							<th>
-								<?php echo esc_html__( 'Ativar recebimento de pagamentos com boleto bancário + Pix', 'module-inter-bank-for-flexify-checkout' );
+								<?php esc_html_e( 'Ativar recebimento de pagamentos com boleto bancário + Pix', 'module-inter-bank-for-flexify-checkout' );
 								
 								if ( ! License::is_valid() ) : ?>
 									<span class="badge pro bg-primary rounded-pill ms-2">
 										<svg class="icon-pro" viewBox="0 0 24.00 24.00" xmlns="http://www.w3.org/2000/svg"><g stroke-width="0"></g><g stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC" stroke-width="0.336"></g><g><path fill-rule="evenodd" clip-rule="evenodd" d="M12.0001 3C12.3334 3 12.6449 3.16613 12.8306 3.443L16.6106 9.07917L21.2523 3.85213C21.5515 3.51525 22.039 3.42002 22.4429 3.61953C22.8469 3.81904 23.0675 4.26404 22.9818 4.70634L20.2956 18.5706C20.0223 19.9812 18.7872 21 17.3504 21H6.64977C5.21293 21 3.97784 19.9812 3.70454 18.5706L1.01833 4.70634C0.932635 4.26404 1.15329 3.81904 1.55723 3.61953C1.96117 3.42002 2.44865 3.51525 2.74781 3.85213L7.38953 9.07917L11.1696 3.443C11.3553 3.16613 11.6667 3 12.0001 3ZM12.0001 5.79533L8.33059 11.2667C8.1582 11.5237 7.8765 11.6865 7.56772 11.7074C7.25893 11.7283 6.95785 11.6051 6.75234 11.3737L3.67615 7.90958L5.66802 18.1902C5.75913 18.6604 6.17082 19 6.64977 19H17.3504C17.8293 19 18.241 18.6604 18.3321 18.1902L20.324 7.90958L17.2478 11.3737C17.0423 11.6051 16.7412 11.7283 16.4324 11.7074C16.1236 11.6865 15.842 11.5237 15.6696 11.2667L12.0001 5.79533Z"></path> </g></svg>
-										<?php echo esc_html__( 'Pro', 'module-inter-bank-for-flexify-checkout' ) ?>
+										<?php esc_html_e( 'Pro', 'module-inter-bank-for-flexify-checkout' ) ?>
 									</span>
 								<?php endif; ?>
 								
-								<span class="flexify-checkout-description"><?php echo esc_html__( 'Ative esta opção para configurar recibimentos via boleto bancário com QR code Pix no boleto e aprovação automática.', 'module-inter-bank-for-flexify-checkout' ) ?></span>
+								<span class="flexify-checkout-description"><?php esc_html_e( 'Ative esta opção para configurar recibimentos via boleto bancário com QR code Pix no boleto e aprovação automática.', 'module-inter-bank-for-flexify-checkout' ) ?></span>
 							</th>
 
 							<td class="d-flex align-items-center">
@@ -332,7 +341,7 @@ class Settings {
 						<tr class="require-enabled-inter-slip-bank">
 							<th>
 								<?php echo esc_html( 'Título da forma de pagamento Boleto', 'module-inter-bank-for-flexify-checkout' ); ?>
-								<span class="flexify-checkout-description"><?php echo esc_html__( 'Título que o usuário verá na finalização de compra.', 'module-inter-bank-for-flexify-checkout' ) ?></span>
+								<span class="flexify-checkout-description"><?php esc_html_e( 'Título que o usuário verá na finalização de compra.', 'module-inter-bank-for-flexify-checkout' ) ?></span>
 							</th>
 							<td>
 								<input type="text" class="form-control input-control-wd-20" name="bank_slip_gateway_title" value="<?php echo Admin_Options::get_setting('bank_slip_gateway_title' ) ?>"/>
@@ -342,7 +351,7 @@ class Settings {
 						<tr class="require-enabled-inter-slip-bank">
 							<th>
 								<?php echo esc_html( 'Descrição da forma de pagamento Boleto', 'module-inter-bank-for-flexify-checkout' ); ?>
-								<span class="flexify-checkout-description"><?php echo esc_html__( 'Descrição da forma de pagamento que o usuário verá na finalização de compra.', 'module-inter-bank-for-flexify-checkout' ) ?></span>
+								<span class="flexify-checkout-description"><?php esc_html_e( 'Descrição da forma de pagamento que o usuário verá na finalização de compra.', 'module-inter-bank-for-flexify-checkout' ) ?></span>
 							</th>
 							<td>
 								<input type="text" class="form-control input-control-wd-20" name="bank_slip_gateway_description" value="<?php echo Admin_Options::get_setting('bank_slip_gateway_description' ) ?>"/>
@@ -352,7 +361,7 @@ class Settings {
 						<tr class="require-enabled-inter-slip-bank">
 							<th>
 								<?php echo esc_html( 'Instruções por e-mail da forma de pagamento Boleto', 'module-inter-bank-for-flexify-checkout' ); ?>
-								<span class="flexify-checkout-description"><?php echo esc_html__( 'Texto exibido no e-mail junto do botão de copiar código Copia e Cola do Pix.', 'module-inter-bank-for-flexify-checkout' ) ?></span>
+								<span class="flexify-checkout-description"><?php esc_html_e( 'Texto exibido no e-mail junto do botão de copiar código Copia e Cola do Pix.', 'module-inter-bank-for-flexify-checkout' ) ?></span>
 							</th>
 							<td>
 								<input type="text" class="form-control input-control-wd-20" name="bank_slip_gateway_email_instructions" value="<?php echo Admin_Options::get_setting('bank_slip_gateway_email_instructions' ) ?>"/>
@@ -362,7 +371,7 @@ class Settings {
 						<tr class="require-enabled-inter-slip-bank">
 							<th>
 								<?php echo esc_html( 'Mensagem do rodapé', 'module-inter-bank-for-flexify-checkout' ); ?>
-								<span class="flexify-checkout-description"><?php echo esc_html__( 'Mensagem do rodapé do boleto bancário. Use a variável {order_id} para inserir o número do pedido.', 'module-inter-bank-for-flexify-checkout' ) ?></span>
+								<span class="flexify-checkout-description"><?php esc_html_e( 'Mensagem do rodapé do boleto bancário. Use a variável {order_id} para inserir o número do pedido.', 'module-inter-bank-for-flexify-checkout' ) ?></span>
 							</th>
 							<td>
 								<input type="text" class="form-control input-control-wd-20" name="bank_slip_gateway_footer_message" value="<?php echo Admin_Options::get_setting('bank_slip_gateway_footer_message' ) ?>"/>
@@ -372,7 +381,7 @@ class Settings {
 						<tr class="require-enabled-inter-slip-bank">
 							<th>
 								<?php echo esc_html( 'Validade do boleto', 'module-inter-bank-for-flexify-checkout' ); ?>
-								<span class="flexify-checkout-description"><?php echo esc_html__( 'Prazo máximo para pagamento do boleto em dias.', 'module-inter-bank-for-flexify-checkout' ) ?></span>
+								<span class="flexify-checkout-description"><?php esc_html_e( 'Prazo máximo para pagamento do boleto em dias.', 'module-inter-bank-for-flexify-checkout' ) ?></span>
 							</th>
 							<td>
 								<input type="number" class="form-control input-control-wd-5" name="bank_slip_gateway_expires" value="<?php echo Admin_Options::get_setting('bank_slip_gateway_expires' ) ?>"/>
