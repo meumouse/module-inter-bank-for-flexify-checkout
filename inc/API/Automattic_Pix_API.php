@@ -23,7 +23,7 @@ class Automattic_Pix_API extends API_Base {
      *
      * @since 1.4.0
      * @param \WC_Order $order | Order instance
-     * @param array $charge_args | Optional charge configuration.
+     * @param array $charge_args | Optional charge configuration
      * @return object
      * @throws Exception
      */
@@ -38,24 +38,24 @@ class Automattic_Pix_API extends API_Base {
         $charge_args = is_array( $charge_args ) ? $charge_args : array();
         $amount = isset( $charge_args['amount'] ) ? wc_format_decimal( $charge_args['amount'] ) : wc_format_decimal( $order->get_total() );
 
-        $data = [
-            'pagador' => [
+        $data = array(
+            'pagador' => array(
                 'nome' => $order->get_formatted_billing_full_name(),
                 $document_type => $document,
-            ],
-            'valor'   => [
+            ),
+            'valor' => array(
                 'original' => $amount,
-            ],
+            ),
             'solicitacaoPagador' => sprintf( __( 'Autorização do pedido #%s.', 'module-inter-bank-for-flexify-checkout' ), $order->get_id() ),
-        ];
+        );
 
         if ( isset( $charge_args['due_days'] ) && is_numeric( $charge_args['due_days'] ) ) {
             $due_days = absint( $charge_args['due_days'] );
 
             if ( $due_days > 0 ) {
-                $data['calendario'] = [
+                $data['calendario'] = array(
                     'expiracao' => $due_days * DAY_IN_SECONDS,
-                ];
+                );
             }
         }
 
@@ -64,7 +64,7 @@ class Automattic_Pix_API extends API_Base {
         $response = $this->do_request( 'pix-automatico/v1/contratos', 'POST', $data );
         $body = json_decode( $response['body'] );
 
-        if ( ! in_array( wp_remote_retrieve_response_code( $response ), [ 200, 201 ] ) ) {
+        if ( ! in_array( wp_remote_retrieve_response_code( $response ), array( 200, 201 ) ) ) {
             $this->log( 'Erro ao criar contrato Pix Automático: ' . print_r( $response, true ), 'emergency' );
             throw new Exception( __( 'Ocorreu um erro ao gerar a autorização do Pix. Tente novamente.', 'module-inter-bank-for-flexify-checkout' ) );
         }
@@ -116,6 +116,7 @@ class Automattic_Pix_API extends API_Base {
     /**
      * Get contract or charge information
      *
+     * @since 1.4.0
      * @param string $contract_id | Contract identifier
      * @param string|null $txid | Charge identifier (optional)
      * @return object
@@ -141,7 +142,8 @@ class Automattic_Pix_API extends API_Base {
     /**
      * Cancel an existing contract
      *
-     * @param string $contract_id Contract identifier
+     * @since 1.4.0
+     * @param string $contract_id | Contract identifier
      * @return bool
      * @throws Exception
      */

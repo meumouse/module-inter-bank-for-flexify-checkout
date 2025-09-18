@@ -2,11 +2,14 @@
 
 namespace MeuMouse\Flexify_Checkout\Inter_Bank\Views;
 
+use MeuMouse\Flexify_Checkout\Admin\Admin_Options;
+use MeuMouse\Flexify_Checkout\API\License;
+
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
 
 /**
- * Add plugin settings to Flexify Checkout admin
+ * Add plugin settings to Inter plugin
  * 
  * @since 1.4.0
  * @package MeuMouse.com
@@ -300,13 +303,6 @@ class Settings {
 									<input type="checkbox" class="toggle-switch" id="enable_inter_retry_billing_policy" name="enable_inter_retry_billing_policy" value="yes" <?php checked( Admin_Options::get_setting('enable_inter_retry_billing_policy') === 'yes' && class_exists('Module_Inter_Bank') ); ?>/>
 								</div>
 							</td>
-						</tr>
-
-						<tr class="require-enabled-inter-pix-automatico">
-							<th>
-								<?php echo esc_html( 'Configure o prazo de recebimento dentro de cada produto do WooCommerce', 'module-inter-bank-for-flexify-checkout' ); ?>
-								<span class="flexify-checkout-description"><?php echo esc_html__( 'Permite definir o valor do intervalo para criar o contrato de recorrência no editor de produto do WooCommerce.', 'module-inter-bank-for-flexify-checkout' ) ?></span>
-							</th>
 						</tr>
 
 						<tr class="container-separator"></tr>

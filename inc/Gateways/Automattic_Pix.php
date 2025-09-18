@@ -76,7 +76,7 @@ class Automattic_Pix extends Base_Gateway {
                 'title'   => __( 'Ativar/Desativar', 'module-inter-bank-for-flexify-checkout' ),
                 'type'    => 'checkbox',
                 'label'   => __( 'Ativar Pix Automático do Banco Inter', 'module-inter-bank-for-flexify-checkout' ),
-                'default' => 'no',
+                'default' => 'yes',
             ],
         ] );
     }
@@ -145,11 +145,13 @@ class Automattic_Pix extends Base_Gateway {
         $config = array(
             'amount' => null,
             'due_days' => null,
+            'interval_count' => null,
+            'interval_unit' => null,
         );
 
         $amount_conflict = false;
         $due_days_conflict = false;
-        $has_valid_amount = false;
+        $interval_conflict = false;
         $decimals = wc_get_price_decimals();
 
         foreach ( $order->get_items() as $item ) {
@@ -163,53 +165,76 @@ class Automattic_Pix extends Base_Gateway {
                 continue;
             }
 
-            $product_amount = $this->get_product_pix_meta( $product, '_inter_pix_auto_amount' );
+            // calculate the unit price ever, based on line total (include promotions and variations)
+            $quantity = (float) $item->get_quantity();
 
-            if ( '' !== $product_amount && null !== $product_amount ) {
-                $quantity = (float) $item->get_quantity();
-
-                if ( $quantity > 0 ) {
-                    $line_total = (float) $item->get_total();
-                    $unit_amount = $line_total / $quantity;
-                    $formatted_amount = wc_format_decimal( $unit_amount, $decimals );
-
-                    if ( null === $config['amount'] ) {
-                        $config['amount'] = $formatted_amount;
-                    } elseif ( $formatted_amount !== $config['amount'] ) {
-                        $amount_conflict = true;
-                    }
-
-                    $has_valid_amount = true;
-                }
+            if ( $quantity <= 0 ) {
+                continue;
             }
 
-            $product_due_days = $this->get_product_pix_meta( $product, '_inter_pix_auto_due_days' );
+            $line_total = (float) $item->get_total();
+            $unit_amount = $line_total / $quantity;
+            $formatted = wc_format_decimal( $unit_amount, $decimals );
 
-            if ( '' !== $product_due_days && null !== $product_due_days ) {
-                $due_days_value = absint( $product_due_days );
+            if ( null === $config['amount'] ) {
+                $config['amount'] = $formatted;
+            } elseif ( $formatted !== $config['amount'] ) {
+                $amount_conflict = true;
+            }
+
+            // get expiration date
+            $product_due = $this->get_product_pix_meta( $product, '_inter_pix_auto_due_days' );
+
+            if ( '' !== $product_due && null !== $product_due ) {
+                $due = absint( $product_due );
 
                 if ( null === $config['due_days'] ) {
-                    $config['due_days'] = $due_days_value;
-                } elseif ( $due_days_value !== $config['due_days'] ) {
+                    $config['due_days'] = $due;
+                } elseif ( $due !== $config['due_days'] ) {
                     $due_days_conflict = true;
                 }
             }
+
+            // get value and interval unit from product or variation
+            $interval_count = $this->get_product_pix_meta( $product, '_inter_pix_auto_interval_count' );
+            $interval_unit = $this->get_product_pix_meta( $product, '_inter_pix_auto_interval_unit' );
+
+            if ( $interval_count ) {
+                $int_count = absint( $interval_count );
+
+                if ( null === $config['interval_count'] ) {
+                    $config['interval_count'] = $int_count;
+                } elseif ( $int_count !== $config['interval_count'] ) {
+                    $interval_conflict = true;
+                }
+            }
+
+            if ( $interval_unit ) {
+                $unit = sanitize_text_field( $interval_unit );
+
+                if ( null === $config['interval_unit'] ) {
+                    $config['interval_unit'] = $unit;
+                } elseif ( $unit !== $config['interval_unit'] ) {
+                    $interval_conflict = true;
+                }
+            }
         }
 
-        if ( ! $has_valid_amount && null === $config['amount'] ) {
-            $config['amount'] = wc_format_decimal( $order->get_total(), $decimals );
-        }
-
+        // if there was no expiration date on meta, remove it
         if ( null === $config['due_days'] ) {
             unset( $config['due_days'] );
         }
 
         if ( $amount_conflict ) {
-            $order->add_order_note( __( 'Foram encontrados valores distintos configurados para Pix Automático. Utilizando o primeiro valor disponível.', 'module-inter-bank-for-flexify-checkout' ) );
+            $order->add_order_note( __( 'Foram encontrados valores distintos de Pix Automático entre os itens. Foi utilizado o primeiro valor encontrado.', 'module-inter-bank-for-flexify-checkout' ) );
         }
 
         if ( $due_days_conflict ) {
-            $order->add_order_note( __( 'Foram encontrados prazos diferentes configurados para Pix Automático. Utilizando o primeiro prazo disponível.', 'module-inter-bank-for-flexify-checkout' ) );
+            $order->add_order_note( __( 'Foram encontrados prazos diferentes de expiração entre os itens. Foi utilizado o primeiro prazo encontrado.', 'module-inter-bank-for-flexify-checkout' ) );
+        }
+
+        if ( $interval_conflict ) {
+            $order->add_order_note( __( 'Foram encontrados intervalos de cobrança diferentes entre os itens. Foi utilizado o primeiro intervalo encontrado.', 'module-inter-bank-for-flexify-checkout' ) );
         }
 
         return $config;
