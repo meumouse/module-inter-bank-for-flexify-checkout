@@ -1,3 +1,8 @@
+Versão 1.3.4 (29/10/2025)
+* Correção de bugs
+    - Duplicidade de informações do Pix em e-mails e página de agradecimento do pedido
+* Otimizações
+
 Versão 1.3.3 (31/08/2025)
 * Correção de bugs
     - Duplicidade de informações do Pix na página de agradecimento
