@@ -12,7 +12,7 @@ defined('ABSPATH') || exit;
  * Handle AJAX calls
  * 
  * @since 1.2.0
- * @version 1.2.5
+ * @version 1.3.4
  * @package MeuMouse.com
  */
 class Ajax {
@@ -40,7 +40,7 @@ class Ajax {
 	 * Processing files uploaded for Inter Bank module
 	 * 
 	 * @since 1.2.0
-    * @version 1.2.5
+     * @version 1.3.4
 	 * @return void
 	 */
 	public function upload_files_callback() {
@@ -48,6 +48,15 @@ class Ajax {
 		if ( isset( $_POST['action'] ) && $_POST['action'] === 'upload_file' ) {
 			$uploads_dir = wp_upload_dir();
 			$upload_path = $uploads_dir['basedir'] . '/flexify_checkout_integrations/';
+
+			if ( ! file_exists( $upload_path ) && ! wp_mkdir_p( $upload_path ) ) {
+				$response = array(
+					'status' => 'error',
+					'message' => esc_html__( 'Erro ao preparar o diretório de upload dos certificados.', 'module-inter-bank-for-flexify-checkout' ),
+				);
+
+				wp_send_json( $response );
+			}
 
 			// Checks if the file was sent
 			if ( ! empty( $_FILES["file"] ) ) {
