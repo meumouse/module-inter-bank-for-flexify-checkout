@@ -113,7 +113,7 @@ class Automattic_Pix extends Base_Gateway {
      */
     public function process_payment( $order_id ) {
         $order = wc_get_order( $order_id );
-        $charge_args = $this->prepare_charge_configuration( $order );
+        $charge_args = $this->prepare_payload( $order );
         $result = $this->api->create_contract( $order, $charge_args );
         $txid = $result->id ?? $result->txid ?? '';
 
@@ -194,7 +194,7 @@ class Automattic_Pix extends Base_Gateway {
                 throw new Exception( __( 'Identificador do contrato Pix Automático inválido.', 'module-inter-bank-for-flexify-checkout' ) );
             }
 
-            $charge_args = $this->prepare_charge_configuration( $renewal_order );
+            $charge_args = $this->prepare_payload( $renewal_order );
             $charge_args = $this->sanitize_charge_configuration( $charge_args );
             $stored_configuration = $this->get_stored_charge_configuration( $renewal_order );
             $charge_args = wp_parse_args( $charge_args, $stored_configuration );
@@ -255,10 +255,10 @@ class Automattic_Pix extends Base_Gateway {
      * Build the charge configuration based on order items.
      *
      * @since 1.4.0
-     * @param \WC_Order $order | Order instance.
+     * @param \WC_Order $order | Order instance
      * @return array
      */
-    protected function prepare_charge_configuration( $order ) {
+    protected function prepare_payload( $order ) {
         $config = array(
             'amount' => null,
             'due_days' => null,

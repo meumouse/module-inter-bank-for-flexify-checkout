@@ -59,6 +59,12 @@ class Automattic_Pix_API extends API_Base {
             }
         }
 
+        $schedule_configuration = $this->build_schedule_configuration( $charge_args );
+
+        if ( ! empty( $schedule_configuration ) ) {
+            $data['configuracaoCobranca'] = $schedule_configuration;
+        }
+
         $this->log( 'Criando contrato Pix Automático do pedido ' . $order->get_id() . ': ' . print_r( $data, true ) );
 
         $response = $this->do_request( 'pix-automatico/v1/contratos', 'POST', $data );
@@ -100,6 +106,20 @@ class Automattic_Pix_API extends API_Base {
             }
         }
 
+        $existing_schedule = array();
+
+        if ( isset( $data['configuracaoCobranca'] ) && is_array( $data['configuracaoCobranca'] ) ) {
+            $existing_schedule = $data['configuracaoCobranca'];
+        }
+
+        $schedule_configuration = $this->build_schedule_configuration( $charge_args, $existing_schedule );
+
+        if ( ! empty( $schedule_configuration ) ) {
+            $data['configuracaoCobranca'] = $schedule_configuration;
+        } elseif ( isset( $data['configuracaoCobranca'] ) ) {
+            unset( $data['configuracaoCobranca'] );
+        }
+
         $endpoint = sprintf( 'pix-automatico/v1/contratos/%s/cobrancas', $contract_id );
         $response = $this->do_request( $endpoint, 'POST', $data );
         $body = json_decode( $response['body'] );
@@ -110,6 +130,93 @@ class Automattic_Pix_API extends API_Base {
         }
 
         return $body;
+    }
+
+
+    /**
+     * Build schedule configuration payload validating input data.
+     *
+     * @since 1.4.0
+     * @param array $charge_args | Charge arguments gathered from the order or manual input.
+     * @param array $existing_config | Optional existing configuration passed to the request payload.
+     * @return array<string,int|string>
+     * @throws Exception When invalid or incomplete settings are detected.
+     */
+    protected function build_schedule_configuration( array $charge_args = array(), array $existing_config = array() ) {
+        $config = array();
+        $invalid_unit = null;
+
+        if ( isset( $existing_config['periodicidade'] ) ) {
+            $config['periodicidade'] = sanitize_text_field( $existing_config['periodicidade'] );
+        }
+
+        if ( isset( $existing_config['intervalo'] ) ) {
+            $config['intervalo'] = absint( $existing_config['intervalo'] );
+        }
+
+        if ( array_key_exists( 'intervalo', $charge_args ) ) {
+            $config['intervalo'] = absint( $charge_args['intervalo'] );
+        } elseif ( array_key_exists( 'interval_count', $charge_args ) ) {
+            $config['intervalo'] = absint( $charge_args['interval_count'] );
+        }
+
+        if ( isset( $charge_args['periodicidade'] ) && '' !== $charge_args['periodicidade'] ) {
+            $config['periodicidade'] = sanitize_text_field( $charge_args['periodicidade'] );
+        }
+
+        $interval_unit = '';
+
+        if ( isset( $charge_args['interval_unit'] ) && '' !== $charge_args['interval_unit'] ) {
+            $interval_unit = sanitize_text_field( $charge_args['interval_unit'] );
+        }
+
+        if ( empty( $config['periodicidade'] ) && $interval_unit && method_exists( $this->gateway, 'map_interval_unit_to_periodicidade' ) ) {
+            $mapped = $this->gateway->map_interval_unit_to_periodicidade( $interval_unit );
+
+            if ( $mapped ) {
+                $config['periodicidade'] = $mapped;
+            } else {
+                $invalid_unit = $interval_unit;
+            }
+        }
+
+        $has_interval = array_key_exists( 'intervalo', $config );
+        $has_periodicity = ! empty( $config['periodicidade'] );
+
+        if ( ! $has_interval && ! $has_periodicity ) {
+            return array();
+        }
+
+        if ( ! $has_periodicity ) {
+            if ( $invalid_unit ) {
+                throw new Exception( __( 'A unidade de intervalo configurada para o Pix Automático não é suportada. Utilize semanal, mensal, trimestral, semestral ou anual.', 'module-inter-bank-for-flexify-checkout' ) );
+            }
+
+            throw new Exception( __( 'Selecione a unidade de tempo da recorrência do Pix Automático.', 'module-inter-bank-for-flexify-checkout' ) );
+        }
+
+        if ( ! $has_interval ) {
+            throw new Exception( __( 'Informe o intervalo de recorrência do Pix Automático.', 'module-inter-bank-for-flexify-checkout' ) );
+        }
+
+        $config['intervalo'] = absint( $config['intervalo'] );
+
+        if ( $config['intervalo'] <= 0 ) {
+            throw new Exception( __( 'Informe um intervalo maior que zero para o Pix Automático.', 'module-inter-bank-for-flexify-checkout' ) );
+        }
+
+        $config['periodicidade'] = strtoupper( $config['periodicidade'] );
+
+        $allowed_periodicities = array( 'SEMANAL', 'MENSAL', 'TRIMESTRAL', 'SEMESTRAL', 'ANUAL' );
+
+        if ( ! in_array( $config['periodicidade'], $allowed_periodicities, true ) ) {
+            throw new Exception( __( 'Período de recorrência do Pix Automático inválido. Utilize semanal, mensal, trimestral, semestral ou anual.', 'module-inter-bank-for-flexify-checkout' ) );
+        }
+
+        return array(
+            'periodicidade' => $config['periodicidade'],
+            'intervalo' => $config['intervalo'],
+        );
     }
     
 

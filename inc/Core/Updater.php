@@ -9,11 +9,12 @@ defined('ABSPATH') || exit;
  * Class to make requests to a remote server to get plugin versions and updates
  * 
  * @since 1.0.0
- * @version 1.2.7
+ * @version 1.4.0
  * @package MeuMouse.com
  */
 class Updater {
 
+    public $get_updates_url = 'https://packages.meumouse.com/v1/updates/module-inter-bank-for-flexify-checkout';
     public $plugin_slug;
     public $version;
     public $cache_key;
@@ -55,8 +56,8 @@ class Updater {
      * Request on remote server
      * 
      * @since 1.0.0
+     * @version 1.4.0
      * @return array
-     * @package MeuMouse.com
      */
     public function request() {
         $cached_data = wp_cache_get( $this->cache_key );
@@ -65,12 +66,12 @@ class Updater {
             $remote = get_transient( $this->cache_data_base_key );
     
             if ( false === $remote ) {
-                $remote = wp_remote_get('https://raw.githubusercontent.com/meumouse/module-inter-bank-for-flexify-checkout/main/dist/module-inter-bank-updater.json', [
+                $remote = wp_remote_get( $this->get_updates_url, array(
                     'timeout' => 10,
-                    'headers' => [
+                    'headers' => array(
                         'Accept' => 'application/json'
-                    ]
-                ]);
+                    )
+                ));
     
                 if ( !is_wp_error( $remote ) && 200 === wp_remote_retrieve_response_code( $remote ) ) {
                     $remote_data = json_decode( wp_remote_retrieve_body( $remote ) );

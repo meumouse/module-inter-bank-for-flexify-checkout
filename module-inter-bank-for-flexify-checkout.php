@@ -9,9 +9,9 @@
  * Author URI: 			    https://meumouse.com/
  * Version: 			    1.4.0
  * WC requires at least:    6.0.0
- * WC tested up to: 		10.1.2
+ * WC tested up to: 		10.3.3
  * Requires PHP: 			7.4
- * Tested up to:      		6.8.2
+ * Tested up to:      		6.8.3
  * Text Domain: 			module-inter-bank-for-flexify-checkout
  * Domain Path: 			/languages
  * License: 				GPL2

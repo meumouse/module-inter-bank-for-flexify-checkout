@@ -1,8 +1,7 @@
-Versão 1.4.0 (18/09/2025)
+Versão 1.4.0 (29/10/2025)
 * Correção de bugs
     - Duplicidade de informações do Pix na página de agradecimento e e-mails
-* Recurso adicionado: Pix automático
-* Compatibilidade com Woo Subscriptions
+* Alteração na API de consulta de atualizações
 
 Versão 1.3.3 (31/08/2025)
 * Correção de bugs
