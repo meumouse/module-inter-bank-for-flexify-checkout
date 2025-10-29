@@ -13,6 +13,7 @@
 namespace chillerlan\QRCodeTest\Output;
 
 use chillerlan\QRCode\{QRCode, QROptions};
+use chillerlan\QRCode\Data\QRMatrix;
 use chillerlan\QRCode\Output\{QROutputInterface, QRImage};
 
 /**
@@ -28,7 +29,6 @@ class QRImageTest extends QROutputTestAbstract{
 
 		if(!extension_loaded('gd')){
 			$this->markTestSkipped('ext-gd not loaded');
-			return;
 		}
 
 		parent::setUp();
@@ -49,7 +49,7 @@ class QRImageTest extends QROutputTestAbstract{
 	public function types():array{
 		return [
 			'png' => [QRCode::OUTPUT_IMAGE_PNG],
-			'gif' => [QRCode::OUTPUT_IMAGE_GIF],
+#			'gif' => [QRCode::OUTPUT_IMAGE_GIF], // causes trouble in PHP 8.4
 			'jpg' => [QRCode::OUTPUT_IMAGE_JPG],
 		];
 	}
@@ -61,8 +61,8 @@ class QRImageTest extends QROutputTestAbstract{
 
 		$this->options->moduleValues = [
 			// data
-			1024 => [0, 0, 0],
-			4    => [255, 255, 255],
+			QRMatrix::M_DATA_DARK => [0, 0, 0],
+			QRMatrix::M_DATA      => [255, 255, 255],
 		];
 
 		$this->outputInterface = $this->getOutputInterface($this->options);

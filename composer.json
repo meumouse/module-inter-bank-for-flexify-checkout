@@ -12,8 +12,8 @@
     ],
     "require": {
         "php": ">= 7.4",
-        "chillerlan/php-qrcode": "4.3.4",
-        "chillerlan/php-settings-container": "2.1.4"
+        "chillerlan/php-qrcode": "4.4.2",
+        "chillerlan/php-settings-container": "3.2.1"
     },
     "autoload": {
         "psr-4": {
