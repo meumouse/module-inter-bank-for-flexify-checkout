@@ -33,6 +33,22 @@ class Bank_Slip extends Base_Gateway {
 	public $expires_in;
 
 	/**
+	 * Track which orders already had the bank slip template rendered on thank you page.
+	 *
+	 * @since 1.3.4
+	 * @var array<int, bool>
+	 */
+	protected static $rendered_thankyou = array();
+
+	/**
+	 * Track which orders already had the bank slip template rendered on e-mails.
+	 *
+	 * @since 1.3.4
+	 * @var array<int, bool>
+	 */
+	protected static $rendered_email = array();
+
+	/**
 	 * Constructor for the gateway
 	 * 
 	 * @since 1.0.0
@@ -166,6 +182,12 @@ class Bank_Slip extends Base_Gateway {
 			return;
 		}
 
+		if ( isset( self::$rendered_email[ $order->get_id() ] ) ) {
+			return;
+		}
+
+		self::$rendered_email[ $order->get_id() ] = true;
+
 		wc_get_template( 'emails/bank-slip-details.php',
 			array(
 				'url' => $order->get_meta('inter_boleto_url'),
@@ -242,6 +264,7 @@ class Bank_Slip extends Base_Gateway {
 	 * Display bank slip on thankyou page
 	 * 
 	 * @since 1.0.0
+	 * @version 1.3.4
 	 * @param int $order_id | Order ID
 	 * @return void
 	 */
@@ -251,6 +274,12 @@ class Bank_Slip extends Base_Gateway {
 		if ( $this->id !== $order->get_payment_method() || $order->is_paid() ) {
 			return;
 		}
+
+		if ( isset( self::$rendered_thankyou[ $order->get_id() ] ) ) {
+			return;
+		}
+
+		self::$rendered_thankyou[ $order->get_id() ] = true;
 
 		wc_get_template( 'checkout/bank-slip-details.php',
 			array(
