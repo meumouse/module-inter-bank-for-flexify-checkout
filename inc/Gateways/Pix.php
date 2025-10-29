@@ -583,4 +583,57 @@ class Pix extends Base_Gateway {
 
 		wp_send_json_success('yes');
 	}
+
+
+	/**
+	 * Regenerate Pix payment details for an order.
+	 *
+	 * Useful when the original Pix charge expired and a new payment
+	 * request is required. The function will create a new Pix charge and
+	 * update all related order metadata.
+	 *
+	 * @since 1.3.4
+	 * @param int $order_id | Order ID
+	 * @return object
+	 * @throws \Exception When the order is invalid or the gateway doesn't match.
+	 */
+	public function regenerate_payment( $order_id ) {
+		$order = wc_get_order( $order_id );
+
+		if ( ! $order ) {
+			throw new \Exception( __( 'Pedido não encontrado.', 'module-inter-bank-for-flexify-checkout' ) );
+		}
+
+		if ( $this->id !== $order->get_payment_method() ) {
+			throw new \Exception( __( 'O pedido não foi pago com Pix Banco Inter.', 'module-inter-bank-for-flexify-checkout' ) );
+		}
+
+		if ( $order->is_paid() ) {
+			throw new \Exception( __( 'O pedido já está pago.', 'module-inter-bank-for-flexify-checkout' ) );
+		}
+
+		$result = $this->api->create( $order );
+
+		$order->set_transaction_id( $result->txid );
+		$order->add_meta_data( 'inter_pix_result', $result, true );
+		$order->add_meta_data( 'inter_pix_payload', $result->pixCopiaECola, true );
+		$order->add_meta_data( 'inter_pix_txid', $result->txid, true );
+		$order->add_meta_data( 'inter_pix_loc', $result->loc, true );
+		$order->add_meta_data( 'inter_pix_created_at', $result->calendario->criacao, true );
+		$order->add_meta_data( 'inter_pix_expires_in', $result->calendario->expiracao, true );
+		$order->set_status( 'on-hold', sprintf( __( 'Pix Banco Inter gerado. Copia e Cola: <code>%s</code>.', 'module-inter-bank-for-flexify-checkout' ), $result->pixCopiaECola ) );
+
+		try {
+			$order->add_meta_data( 'inter_pix_qrcode', ( new QRCode )->render( $result->pixCopiaECola ), true );
+		} catch ( \Throwable $th ) {
+			$order->add_order_note( 'Erro ao gerar QR Code: ' . $th->getMessage() );
+		}
+
+		$order->add_order_note( __( 'Novo pagamento Pix gerado.', 'module-inter-bank-for-flexify-checkout' ) );
+		$order->save();
+
+		do_action( 'module_inter_bank_payments_new_pix_order', $order, $result );
+
+		return $result;
+	}
 }
