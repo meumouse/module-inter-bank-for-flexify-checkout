@@ -15,7 +15,7 @@ defined('ABSPATH') || exit;
  * Class for extends main class Base_Gateway for add payment gateway Pix on WooCommerce
  * 
  * @since 1.0.0
- * @version 1.3.3
+ * @version 1.4.0
  * @package MeuMouse.com
  */
 class Pix extends Base_Gateway {
@@ -29,6 +29,22 @@ class Pix extends Base_Gateway {
 	public $id = 'interpix';
 	public $expires_in;
 	public $pix_key;
+
+	/**
+	 * Track which orders already had the Pix template rendered on thank you page.
+	 *
+	 * @since 1.3.4
+	 * @var array<int, bool>
+	 */
+	protected static $rendered_thankyou = array();
+
+	/**
+	 * Track which orders already had the Pix template rendered on e-mails.
+	 *
+	 * @since 1.3.4
+	 * @var array<int, bool>
+	 */
+	protected static $rendered_email = array();
 
 	/**
 	 * Constructor for the gateway
@@ -88,6 +104,7 @@ class Pix extends Base_Gateway {
 	/**
 	 * Check if the gateway is available for use.
 	 *
+	 * @since 1.0.0
 	 * @return bool
 	 */
 	public function is_available() {
@@ -162,6 +179,12 @@ class Pix extends Base_Gateway {
 			return;
 		}
 
+		if ( isset( self::$rendered_email[ $order->get_id() ] ) ) {
+			return;
+		}
+
+		self::$rendered_email[ $order->get_id() ] = true;
+
 		wc_get_template( 'checkout/pix-details.php',
 			array(
 				'id' => $this->id,
@@ -233,8 +256,8 @@ class Pix extends Base_Gateway {
 				'is_email' => false,
 				'instructions' => '',
 				'pix_details_page' => $order->get_checkout_payment_url( true ),
-				'payload' => $order->get_meta( 'inter_pix_payload' ),
-				'pix_image' => $order->get_meta( 'inter_pix_qrcode' ),
+				'payload' => $order->get_meta('inter_pix_payload'),
+				'pix_image' => $order->get_meta('inter_pix_qrcode'),
 			),
 			'',
 			FD_MODULE_INTER_TPL_PATH
@@ -261,80 +284,84 @@ class Pix extends Base_Gateway {
 			return;
 		}
 
-		if ( ! $order->has_status( 'on-hold' ) ) {
+		if ( ! $order->has_status('on-hold') ) {
 			return;
 		}
 
-		?>
+		if ( isset( self::$rendered_thankyou[ $order->get_id() ] ) ) {
+			return;
+		}
+
+		self::$rendered_thankyou[ $order->get_id() ] = true; ?>
 
 		<script>
-		jQuery( function($) {
-			var BancoInterPixCheckParams = <?php echo json_encode( [
-				'interval' => 5,
-				'wc_ajax_url' => \WC_AJAX::get_endpoint('%%endpoint%%'),
-				'orderId' => intval( $order->get_id() ),
-				'orderKey' => esc_attr( $order->get_order_key() ),
-			] ); ?>;
+			jQuery( function($) {
+				var BancoInterPixCheckParams = <?php echo json_encode( array(
+					'interval' => 5,
+					'wc_ajax_url' => \WC_AJAX::get_endpoint('%%endpoint%%'),
+					'orderId' => intval( $order->get_id() ),
+					'orderKey' => esc_attr( $order->get_order_key() ),
+				)); ?>;
 
-			/**
-			* Main file.
-			*
-			* @type {Object}
-			*/
-			var BancoInterPixCheck = {
-			/**
-			* Initialize actions.
-			*/
-			init: function() {
-				if ( 'undefined' === typeof BancoInterPixCheckParams ) {
-					return;
+				/**
+				* Main file.
+				*
+				* @type {Object}
+				*/
+				var BancoInterPixCheck = {
+					/**
+					* Initialize actions.
+					*/
+					init: function() {
+						if ( 'undefined' === typeof BancoInterPixCheckParams ) {
+							return;
+						}
+
+						this.checkOrderStatus()
+					},
+
+					checkOrderStatus: function() {
+						var interval = setInterval(() => {
+							$.ajax({
+								url: BancoInterPixCheckParams.wc_ajax_url.toString().replace( '%%endpoint%%', 'inter_bank_order_is_paid' ),
+								type: 'POST',
+								data: {
+									order_id: BancoInterPixCheckParams.orderId,
+									order_key: BancoInterPixCheckParams.orderKey,
+								},
+								success: function( response ) {
+									console.log('order status check', response)
+
+									if ( 'yes' === response?.data?.result ) {
+										clearInterval(interval)
+
+										$(document.body).block({
+											message: null,
+											overlayCSS: {
+												background: '#fff',
+												opacity: 0.6,
+											}
+										});
+
+										if ( response?.data?.redirect ) {
+											window.location.href = response.data.redirect;
+										} else {
+											document.location.reload();
+										}
+									}
+								},
+								fail: function(error) {
+									console.log( 'status check error', error, error.code )
+								},
+							} ).always( function(response) {
+								// self.unblock();
+							});
+						}, parseInt( BancoInterPixCheckParams.interval ) * 1000 );
+					}
 				}
 
-				this.checkOrderStatus()
-			},
-
-			checkOrderStatus: function() {
-				var interval = setInterval(() => {
-					$.ajax({
-						url: BancoInterPixCheckParams.wc_ajax_url.toString().replace( '%%endpoint%%', 'inter_bank_order_is_paid' ),
-						type: 'POST',
-						data: {
-							order_id: BancoInterPixCheckParams.orderId,
-							order_key: BancoInterPixCheckParams.orderKey,
-						},
-						success: function( response ) {
-							console.log('order status check', response)
-
-							if ( 'yes' === response?.data?.result ) {
-								clearInterval(interval)
-
-								$(document.body).block({
-									message: null,
-									overlayCSS: {
-										background: '#fff',
-										opacity: 0.6,
-									}
-								});
-
-								if ( response?.data?.redirect ) {
-									window.location.href = response.data.redirect;
-								} else {
-									document.location.reload();
-								}
-							}
-						},
-						fail: function(error) {
-							console.log( 'status check error', error, error.code )
-						},
-					} ).always( function(response) {
-						// self.unblock();
-					});
-				}, parseInt( BancoInterPixCheckParams.interval ) * 1000 );
-			}
-			}
-
-			BancoInterPixCheck.init();
-		});
+				BancoInterPixCheck.init();
+			});
 		</script>
 
 		<?php
