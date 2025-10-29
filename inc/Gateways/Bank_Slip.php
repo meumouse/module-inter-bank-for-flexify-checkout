@@ -12,6 +12,13 @@ use MeuMouse\Flexify_Checkout\Admin\Admin_Options;
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
 
+/**
+ * Bank Slip Gateway Class
+ * 
+ * @since 1.0.0
+ * @version 1.3.4
+ * @package MeuMouse.com
+ */
 class Bank_Slip extends Base_Gateway {
 
   /**
@@ -29,7 +36,7 @@ class Bank_Slip extends Base_Gateway {
    * Constructor for the gateway
    * 
    * @since 1.0.0
-   * @version 1.3.2
+   * @version 1.3.4
    * @return void
    */
   public function __construct() {

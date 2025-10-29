@@ -171,7 +171,7 @@ class Pix extends Base_Gateway {
 	 * @return void
 	 */
 	public function email_instructions( $order, $sent_to_admin, $plain_text = false ) {
-		if ( ! $order->has_status( 'on-hold' ) || $sent_to_admin ) {
+		if ( ! $order->has_status('on-hold') || $sent_to_admin ) {
 			return;
 		}
 
