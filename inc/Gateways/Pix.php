@@ -15,7 +15,7 @@ defined('ABSPATH') || exit;
  * Class for extends main class Base_Gateway for add payment gateway Pix on WooCommerce
  * 
  * @since 1.0.0
- * @version 1.3.3
+ * @version 1.3.4
  * @package MeuMouse.com
  */
 class Pix extends Base_Gateway {
@@ -29,6 +29,22 @@ class Pix extends Base_Gateway {
 	public $id = 'interpix';
 	public $expires_in;
 	public $pix_key;
+
+	/**
+	 * Track which orders already had the Pix template rendered on thank you page.
+	 *
+	 * @since 1.3.4
+	 * @var array<int, bool>
+	 */
+	protected static $rendered_thankyou = array();
+
+	/**
+	 * Track which orders already had the Pix template rendered on e-mails.
+	 *
+	 * @since 1.3.4
+	 * @var array<int, bool>
+	 */
+	protected static $rendered_email = array();
 
 	/**
 	 * Constructor for the gateway
@@ -76,10 +92,10 @@ class Pix extends Base_Gateway {
 	public function gateway_fields() {
 		return apply_filters( $this->id . '_setting_fields', array(
 			'enabled' => array(
-				'title' => __( 'Ativar/Desativar', 'module-inter-bank-for-flexify-checkout' ),
-				'type' => 'checkbox',
-				'label' => __( 'Ativar recebimento via Pix do banco Inter', 'module-inter-bank-for-flexify-checkout' ),
-				'default' => 'yes',
+				'title' 	=> __( 'Ativar/Desativar', 'module-inter-bank-for-flexify-checkout' ),
+				'type' 		=> 'checkbox',
+				'label' 	=> __( 'Ativar recebimento via Pix do banco Inter', 'module-inter-bank-for-flexify-checkout' ),
+				'default' 	=> 'yes',
 			),
 		));
 	}
@@ -88,6 +104,7 @@ class Pix extends Base_Gateway {
 	/**
 	 * Check if the gateway is available for use.
 	 *
+	 * @since 1.0.0
 	 * @return bool
 	 */
 	public function is_available() {
@@ -154,13 +171,19 @@ class Pix extends Base_Gateway {
 	 * @return void
 	 */
 	public function email_instructions( $order, $sent_to_admin, $plain_text = false ) {
-		if ( ! $order->has_status( 'on-hold' ) || $sent_to_admin ) {
+		if ( ! $order->has_status('on-hold') || $sent_to_admin ) {
 			return;
 		}
 
 		if ( $this->id !== $order->get_payment_method() ) {
 			return;
 		}
+
+		if ( isset( self::$rendered_email[ $order->get_id() ] ) ) {
+			return;
+		}
+
+		self::$rendered_email[ $order->get_id() ] = true;
 
 		wc_get_template( 'checkout/pix-details.php',
 			array(
@@ -233,8 +256,8 @@ class Pix extends Base_Gateway {
 				'is_email' => false,
 				'instructions' => '',
 				'pix_details_page' => $order->get_checkout_payment_url( true ),
-				'payload' => $order->get_meta( 'inter_pix_payload' ),
-				'pix_image' => $order->get_meta( 'inter_pix_qrcode' ),
+				'payload' => $order->get_meta('inter_pix_payload'),
+				'pix_image' => $order->get_meta('inter_pix_qrcode'),
 			),
 			'',
 			FD_MODULE_INTER_TPL_PATH
@@ -261,80 +284,84 @@ class Pix extends Base_Gateway {
 			return;
 		}
 
-		if ( ! $order->has_status( 'on-hold' ) ) {
+		if ( ! $order->has_status('on-hold') ) {
 			return;
 		}
 
-		?>
+		if ( isset( self::$rendered_thankyou[ $order->get_id() ] ) ) {
+			return;
+		}
+
+		self::$rendered_thankyou[ $order->get_id() ] = true; ?>
 
 		<script>
-		jQuery( function($) {
-			var BancoInterPixCheckParams = <?php echo json_encode( [
-				'interval' => 5,
-				'wc_ajax_url' => \WC_AJAX::get_endpoint('%%endpoint%%'),
-				'orderId' => intval( $order->get_id() ),
-				'orderKey' => esc_attr( $order->get_order_key() ),
-			] ); ?>;
+			jQuery( function($) {
+				var BancoInterPixCheckParams = <?php echo json_encode( array(
+					'interval' => 5,
+					'wc_ajax_url' => \WC_AJAX::get_endpoint('%%endpoint%%'),
+					'orderId' => intval( $order->get_id() ),
+					'orderKey' => esc_attr( $order->get_order_key() ),
+				)); ?>;
 
-			/**
-			* Main file.
-			*
-			* @type {Object}
-			*/
-			var BancoInterPixCheck = {
-			/**
-			* Initialize actions.
-			*/
-			init: function() {
-				if ( 'undefined' === typeof BancoInterPixCheckParams ) {
-					return;
+				/**
+				* Main file.
+				*
+				* @type {Object}
+				*/
+				var BancoInterPixCheck = {
+					/**
+					* Initialize actions.
+					*/
+					init: function() {
+						if ( 'undefined' === typeof BancoInterPixCheckParams ) {
+							return;
+						}
+
+						this.checkOrderStatus()
+					},
+
+					checkOrderStatus: function() {
+						var interval = setInterval(() => {
+							$.ajax({
+								url: BancoInterPixCheckParams.wc_ajax_url.toString().replace( '%%endpoint%%', 'inter_bank_order_is_paid' ),
+								type: 'POST',
+								data: {
+									order_id: BancoInterPixCheckParams.orderId,
+									order_key: BancoInterPixCheckParams.orderKey,
+								},
+								success: function( response ) {
+									console.log('order status check', response)
+
+									if ( 'yes' === response?.data?.result ) {
+										clearInterval(interval)
+
+										$(document.body).block({
+											message: null,
+											overlayCSS: {
+												background: '#fff',
+												opacity: 0.6,
+											}
+										});
+
+										if ( response?.data?.redirect ) {
+											window.location.href = response.data.redirect;
+										} else {
+											document.location.reload();
+										}
+									}
+								},
+								fail: function(error) {
+									console.log( 'status check error', error, error.code )
+								},
+							} ).always( function(response) {
+								// self.unblock();
+							});
+						}, parseInt( BancoInterPixCheckParams.interval ) * 1000 );
+					}
 				}
 
-				this.checkOrderStatus()
-			},
-
-			checkOrderStatus: function() {
-				var interval = setInterval(() => {
-					$.ajax({
-						url: BancoInterPixCheckParams.wc_ajax_url.toString().replace( '%%endpoint%%', 'inter_bank_order_is_paid' ),
-						type: 'POST',
-						data: {
-							order_id: BancoInterPixCheckParams.orderId,
-							order_key: BancoInterPixCheckParams.orderKey,
-						},
-						success: function( response ) {
-							console.log('order status check', response)
-
-							if ( 'yes' === response?.data?.result ) {
-								clearInterval(interval)
-
-								$(document.body).block({
-									message: null,
-									overlayCSS: {
-										background: '#fff',
-										opacity: 0.6,
-									}
-								});
-
-								if ( response?.data?.redirect ) {
-									window.location.href = response.data.redirect;
-								} else {
-									document.location.reload();
-								}
-							}
-						},
-						fail: function(error) {
-							console.log( 'status check error', error, error.code )
-						},
-					} ).always( function(response) {
-						// self.unblock();
-					});
-				}, parseInt( BancoInterPixCheckParams.interval ) * 1000 );
-			}
-			}
-
-			BancoInterPixCheck.init();
-		});
+				BancoInterPixCheck.init();
+			});
 		</script>
 
 		<?php
@@ -555,5 +582,58 @@ class Pix extends Base_Gateway {
 		}
 
 		wp_send_json_success('yes');
+	}
+
+
+	/**
+	 * Regenerate Pix payment details for an order.
+	 *
+	 * Useful when the original Pix charge expired and a new payment
+	 * request is required. The function will create a new Pix charge and
+	 * update all related order metadata.
+	 *
+	 * @since 1.3.4
+	 * @param int $order_id | Order ID
+	 * @return object
+	 * @throws \Exception When the order is invalid or the gateway doesn't match.
+	 */
+	public function regenerate_payment( $order_id ) {
+		$order = wc_get_order( $order_id );
+
+		if ( ! $order ) {
+			throw new \Exception( __( 'Pedido não encontrado.', 'module-inter-bank-for-flexify-checkout' ) );
+		}
+
+		if ( $this->id !== $order->get_payment_method() ) {
+			throw new \Exception( __( 'O pedido não foi pago com Pix Banco Inter.', 'module-inter-bank-for-flexify-checkout' ) );
+		}
+
+		if ( $order->is_paid() ) {
+			throw new \Exception( __( 'O pedido já está pago.', 'module-inter-bank-for-flexify-checkout' ) );
+		}
+
+		$result = $this->api->create( $order );
+
+		$order->set_transaction_id( $result->txid );
+		$order->add_meta_data( 'inter_pix_result', $result, true );
+		$order->add_meta_data( 'inter_pix_payload', $result->pixCopiaECola, true );
+		$order->add_meta_data( 'inter_pix_txid', $result->txid, true );
+		$order->add_meta_data( 'inter_pix_loc', $result->loc, true );
+		$order->add_meta_data( 'inter_pix_created_at', $result->calendario->criacao, true );
+		$order->add_meta_data( 'inter_pix_expires_in', $result->calendario->expiracao, true );
+		$order->set_status( 'on-hold', sprintf( __( 'Pix Banco Inter gerado. Copia e Cola: <code>%s</code>.', 'module-inter-bank-for-flexify-checkout' ), $result->pixCopiaECola ) );
+
+		try {
+			$order->add_meta_data( 'inter_pix_qrcode', ( new QRCode )->render( $result->pixCopiaECola ), true );
+		} catch ( \Throwable $th ) {
+			$order->add_order_note( 'Erro ao gerar QR Code: ' . $th->getMessage() );
+		}
+
+		$order->add_order_note( __( 'Novo pagamento Pix gerado.', 'module-inter-bank-for-flexify-checkout' ) );
+		$order->save();
+
+		do_action( 'module_inter_bank_payments_new_pix_order', $order, $result );
+
+		return $result;
 	}
 }

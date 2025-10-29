@@ -9,6 +9,7 @@ defined('ABSPATH') || exit;
  * Class for initializing all the plugin classes
  * 
  * @since 1.3.1
+ * @version 1.3.4
  * @package MeuMouse.com
  */
 class Init {
@@ -17,6 +18,7 @@ class Init {
      * Construct function
      * 
      * @since 1.3.1
+	 * @version 1.3.4
      * @return void
      */
     public function __construct() {
@@ -36,7 +38,7 @@ class Init {
 		new \MeuMouse\Flexify_Checkout\Inter_Bank\Core\Ajax();
 		new \MeuMouse\Flexify_Checkout\Inter_Bank\Bank_Slip\Print_Bank_Slip();
 		new \MeuMouse\Flexify_Checkout\Inter_Bank\Cron\Schedule();
-		new \MeuMouse\Flexify_Checkout\Inter_Bank\Core\Updater();
+		new \MeuMouse\Flexify_Checkout\Inter_Bank\API\Updater();
     }
 
 

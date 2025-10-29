@@ -7,11 +7,11 @@
  * Requires Plugins: 		flexify-checkout-for-woocommerce
  * Author: 				    MeuMouse.com
  * Author URI: 			    https://meumouse.com/
- * Version: 			    1.3.3
+ * Version: 			    1.3.4
  * WC requires at least:    6.0.0
- * WC tested up to: 		10.1.2
+ * WC tested up to: 		10.3.3
  * Requires PHP: 			7.4
- * Tested up to:      		6.8.2
+ * Tested up to:      		6.8.3
  * Text Domain: 			module-inter-bank-for-flexify-checkout
  * Domain Path: 			/languages
  * License: 				GPL2
@@ -45,7 +45,7 @@ class Module_Inter_Bank {
 	 * @since 1.0.0
 	 * @var string
 	 */
-	public static $version = '1.3.3';
+	public static $version = '1.3.4';
 
   	/**
 	 * Plugin initiated

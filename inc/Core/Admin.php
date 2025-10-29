@@ -12,7 +12,7 @@ defined('ABSPATH') || exit;
  * Add plugin settings to Flexify Checkout admin
  * 
  * @since 1.2.0
- * @version 1.3.0
+ * @version 1.3.4
  * @package MeuMouse.com
  */
 class Admin {
@@ -390,7 +390,7 @@ class Admin {
 	 * Create paste and archive .htaccess for certificates
 	 * 
 	 * @since 1.0.0
-	 * @version 1.2.0
+	 * @version 1.3.4
 	 * @return void
 	 */
 	public static function certificates_folder() {
@@ -398,7 +398,7 @@ class Admin {
 		$folder_path = $upload_dir['basedir'] . '/flexify_checkout_integrations';
 
 		if ( ! file_exists( $folder_path ) ) {
-			mkdir( $folder_path );
+			wp_mkdir_p( $folder_path );
 		}
 
 		$file_path = $folder_path . '/.htaccess';
